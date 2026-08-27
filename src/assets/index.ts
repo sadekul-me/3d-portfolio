@@ -11,3 +11,5 @@ export {
   type AssetManifest,
 } from '@/assets/registry/assetRegistry';
 export { createEmptyRoomManifest, ROOM_MANIFEST_IDS } from '@/assets/manifests/roomManifests';
+export { createExteriorManifest, EXTERIOR_GLB_URL } from '@/assets/manifests/exteriorManifest';
+export { registerDefaultAssets } from '@/assets/registerDefaultAssets';
