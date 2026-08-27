@@ -1,0 +1,75 @@
+import type { MessageTree } from '@/i18n/catalogs/en';
+
+export const zhCNMessages: MessageTree = {
+  app: {
+    name: 'Digital Residence',
+    skipToContent: '跳到主要内容',
+    skipCinematic: '跳过电影过场',
+    language: '语言',
+    english: 'English',
+    chinese: '简体中文',
+  },
+  landing: {
+    kicker: '交互式 3D 作品集',
+    title: 'Digital Residence',
+    subtitle: '面向软件工程、AI 系统与架构思维的电影化数字居所。3D 世界是体验层，而不是信息障碍。',
+    enterExperience: '进入体验',
+    quickPortfolio: '快速作品集',
+    resume: '简历',
+    contact: '联系',
+    soundOn: '声音开',
+    soundOff: '声音关',
+    placeholderNotice: '正式职业内容尚未写入。当前基础版本只用于验证架构、导航与访问路径。',
+  },
+  nav: {
+    map: '居所地图',
+    currentLocation: '当前位置',
+    visited: '已访问',
+    exterior: '外观',
+    identity: '身份',
+    engineering: '工程',
+    aiLab: 'AI 实验室',
+    projects: '项目',
+    architecture: '架构',
+    commandCenter: '指挥中心',
+  },
+  portfolio: {
+    title: '快速作品集',
+    intro: '即使没有 WebGL，核心职业信息仍然可用。这是一等公民路径，而不是降级安慰。',
+    about: '关于',
+    experience: '经历',
+    skills: '技能',
+    projects: '项目',
+    architecture: '架构',
+    empty: '尚无已发布条目。内容将从 3D 居所使用的同一份规范目录出现在这里。',
+  },
+  experience: {
+    loading: '正在准备居所',
+    reduced: '降低画质的 3D 模式',
+    lightweight: '轻量体验',
+    webglUnavailable: 'WebGL 不可用，正在打开快速作品集。',
+  },
+  contact: {
+    title: '指挥中心',
+    unavailable: '在正式联系方式发布之前，联系表单暂不可用。',
+  },
+  resume: {
+    title: '简历',
+    unavailable: '尚无已发布简历。HTML 简历表示将放在此处。',
+  },
+  errors: {
+    generic: '出现了问题。核心作品集信息仍然可用。',
+    navigationInvalid: '该房间不可用。',
+    assetFailed: '部分场景无法加载，正在使用更简单的表示。',
+    aiUnavailable: 'AI 向导暂不可用。搜索与导航仍然可用。',
+  },
+  a11y: {
+    reducedMotion: '已开启减弱动效。电影化转场已缩短。',
+    primaryNav: '主导航',
+    experienceCanvas: '交互式 3D 居所',
+  },
+  diagnostics: {
+    title: '诊断',
+    hidden: '诊断信息默认不对访客展示。',
+  },
+};

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# Core professional information must remain crawlable.
+# The 3D experience is never the only information path.
+Sitemap: /sitemap.xml
