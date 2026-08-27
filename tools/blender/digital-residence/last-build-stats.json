@@ -1,0 +1,11 @@
+{
+  "blender": "5.2.0 LTS",
+  "exportableObjects": 225,
+  "meshObjects": 216,
+  "triangleCount": 8964,
+  "materialCount": 16,
+  "lightCount": 5,
+  "animationObjects": ["PROP_Door_Main_L", "PROP_Door_Main_R", "PROP_Gate_L", "PROP_Gate_R"],
+  "glbBytes": 697248,
+  "glb": "public/assets/world/exterior/digital-residence-exterior.glb"
+}
