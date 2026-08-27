@@ -11,7 +11,7 @@ See `nextAssetState` in `src/assets/loaders/assetLifecycle.ts`.
 
 ## Manifests
 
-Each room has a manifest id (`room-exterior`, …). Foundation manifests are empty on purpose: there is no final Blender content yet.
+Each room has a manifest id (`room-exterior`, …). The exterior room now references a real GLB; other rooms remain empty until modeled.
 
 Designed to carry:
 
@@ -34,6 +34,16 @@ Rules:
 - apply scale/rotation before export
 - never ship `.blend` files in `public/`
 - hashed assets are immutable; `index.html` is not
+
+## Current production asset
+
+The Phase 1 exterior lives at:
+
+- source: `assets-source/blender/digital-residence/DigitalResidence_Exterior.blend` (private, gitignored)
+- generator: `tools/blender/digital-residence/build_exterior.py`
+- runtime: `public/assets/world/exterior/digital-residence-exterior.glb`
+
+Rebuild with the local Blender 5.2 CLI as documented in `tools/blender/digital-residence/README.md`.
 
 ## Loading order
 
