@@ -1,0 +1,86 @@
+[
+  {
+    "id": "foliage-cluster-side-a",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "hero foliage cluster cards",
+    "resolution": [1024, 1024],
+    "alpha": true,
+    "LOD": "hero",
+    "public": true,
+    "file": "/assets/world/vegetation/foliage-cluster-side-a.png"
+  },
+  {
+    "id": "foliage-cluster-side-b",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "hero foliage cluster cards",
+    "resolution": [1024, 1024],
+    "alpha": true,
+    "LOD": "hero",
+    "public": true,
+    "file": "/assets/world/vegetation/foliage-cluster-side-b.png"
+  },
+  {
+    "id": "foliage-cluster-palm",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "mid palm frond cards",
+    "resolution": [1024, 1024],
+    "alpha": true,
+    "LOD": "mid",
+    "public": true,
+    "file": "/assets/world/vegetation/foliage-cluster-palm.png"
+  },
+  {
+    "id": "foliage-cluster-broadleaf",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "mid broadleaf clusters",
+    "resolution": [768, 768],
+    "alpha": true,
+    "LOD": "mid",
+    "public": true,
+    "file": "/assets/world/vegetation/foliage-cluster-broadleaf.png"
+  },
+  {
+    "id": "tree-palm-distant",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "distant palm billboards",
+    "resolution": [768, 1152],
+    "alpha": true,
+    "LOD": "distant",
+    "public": true,
+    "file": "/assets/world/vegetation/tree-palm-distant.png"
+  },
+  {
+    "id": "water-foam-shore",
+    "type": "png-alpha",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "shoreline and waterfall foam",
+    "resolution": [1024, 682],
+    "alpha": true,
+    "LOD": "water",
+    "public": true,
+    "file": "/assets/world/water/water-foam-shore.png"
+  },
+  {
+    "id": "rock-basalt-albedo",
+    "type": "pbr-albedo",
+    "source": "locally generated image asset",
+    "license": "project-original / generated for Digital Residence",
+    "purpose": "island cliff / shoreline rock albedo",
+    "resolution": [1024, 1024],
+    "alpha": false,
+    "LOD": "hero",
+    "public": true,
+    "file": "/assets/world/rocks/rock-basalt-albedo.png"
+  }
+]
