@@ -21,6 +21,11 @@ export const enMessages = {
     placeholderNotice:
       'Canonical professional content has not been authored yet. This foundation exposes architecture, navigation, and access paths only.',
   },
+  look: {
+    label: 'Presentation',
+    system: 'System',
+    cinematic: 'Cinematic',
+  },
   nav: {
     map: 'Residence map',
     currentLocation: 'Current location',

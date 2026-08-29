@@ -1,6 +1,9 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ExperienceCanvas } from '@/experience/ExperienceCanvas';
+import { VisualLookContext } from '@/experience/look/VisualLookContext';
+import type { VisualLook } from '@/experience/look/visualLook';
 import { ExperienceHud } from '@/ui/hud/ExperienceHud';
 import { DiagnosticsHud } from '@/observability/diagnostics/DiagnosticsHud';
 import { AppErrorBoundary } from '@/app/boundaries/ErrorBoundaries';
@@ -9,6 +12,8 @@ import { useAppStore } from '@/store/appStore';
 
 export default function ExperienceApp() {
   const locale = useAppStore((state) => state.preferences.locale);
+  const [look, setLook] = useState<VisualLook>('SYSTEM');
+  const lookValue = useMemo(() => ({ look, setLook }), [look]);
 
   return (
     <main id="main" className="relative h-screen w-screen overflow-hidden bg-obsidian">
@@ -22,9 +27,11 @@ export default function ExperienceApp() {
           </section>
         }
       >
-        <ExperienceCanvas />
-        <ExperienceHud />
-        <DiagnosticsHud />
+        <VisualLookContext.Provider value={lookValue}>
+          <ExperienceCanvas />
+          <ExperienceHud />
+          <DiagnosticsHud />
+        </VisualLookContext.Provider>
       </AppErrorBoundary>
     </main>
   );

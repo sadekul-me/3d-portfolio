@@ -21,6 +21,11 @@ export const zhCNMessages: MessageTree = {
     soundOff: '声音关',
     placeholderNotice: '正式职业内容尚未写入。当前基础版本只用于验证架构、导航与访问路径。',
   },
+  look: {
+    label: '呈现',
+    system: '系统',
+    cinematic: '电影',
+  },
   nav: {
     map: '居所地图',
     currentLocation: '当前位置',
