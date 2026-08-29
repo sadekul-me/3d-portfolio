@@ -1,11 +1,43 @@
 {
   "blender": "5.2.0 LTS",
-  "exportableObjects": 225,
-  "meshObjects": 216,
-  "triangleCount": 8964,
-  "materialCount": 16,
-  "lightCount": 5,
-  "animationObjects": ["PROP_Door_Main_L", "PROP_Door_Main_R", "PROP_Gate_L", "PROP_Gate_R"],
-  "glbBytes": 697248,
-  "glb": "public/assets/world/exterior/digital-residence-exterior.glb"
+  "exportableObjects": 306,
+  "meshObjects": 295,
+  "triangleCount": 445318,
+  "materialCount": 30,
+  "lightCount": 11,
+  "animationObjects": [
+    "PROP_Door_Main_L",
+    "PROP_Door_Main_R",
+    "PROP_Main_Gate_L",
+    "PROP_Main_Gate_R"
+  ],
+  "glb": "D:\\3d-portfolio\\public\\assets\\world\\exterior\\digital-residence-exterior.glb",
+  "blend": "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\DigitalResidence_Exterior.blend",
+  "collections": [
+    "00_GUIDES",
+    "01_ARCHITECTURE",
+    "02_FACADE",
+    "03_GLASS",
+    "04_GROUND",
+    "05_BOUNDARY",
+    "06_GATE",
+    "07_LANDSCAPE",
+    "08_WATER",
+    "09_PROPS",
+    "10_LIGHTS",
+    "11_COLLISION",
+    "12_UI_ANCHORS",
+    "13_CAMERAS",
+    "14_ANIMATION",
+    "90_EXPORT",
+    "99_DEBUG"
+  ],
+  "glbBytes": 25108692,
+  "renders": [
+    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_Gate.png",
+    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_Identity_Monolith_Closeup.png",
+    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_PORTFOLIO_FACADE_SYSTEM.png",
+    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_SIGNAGE_CLOSEUP.png",
+    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_SYSTEM_HERO.png"
+  ]
 }
