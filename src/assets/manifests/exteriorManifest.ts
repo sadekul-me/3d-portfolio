@@ -2,7 +2,7 @@ import type { AssetManifest } from '@/assets/registry/assetRegistry';
 
 export const EXTERIOR_MAIN_ASSET_ID = 'exterior-main';
 
-export const EXTERIOR_GLB_URL = '/assets/world/exterior/digital-residence-exterior.glb';
+export const EXTERIOR_GLB_URL = '/assets/world/exterior/digital-residence-exterior.glb?v=25108692';
 
 export function createExteriorManifest(): AssetManifest {
   return {
@@ -14,7 +14,7 @@ export function createExteriorManifest(): AssetManifest {
         id: EXTERIOR_MAIN_ASSET_ID,
         kind: 'glb',
         url: EXTERIOR_GLB_URL,
-        bytesEstimate: 697_248,
+        bytesEstimate: 25_108_692,
         qualityVariants: {
           HIGH: EXTERIOR_GLB_URL,
           BALANCED: EXTERIOR_GLB_URL,

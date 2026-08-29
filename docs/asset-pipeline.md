@@ -45,6 +45,8 @@ The Phase 1 exterior lives at:
 
 Rebuild with the local Blender 5.2 CLI as documented in `tools/blender/digital-residence/README.md`.
 
+Private QA stills live under `assets-source/blender/digital-residence/renders/` (gitignored).
+
 ## Loading order
 
 App shell and Quick Portfolio first. Current room highest priority. Adjacent rooms preload. Distant rooms lazy. Optional effects last.

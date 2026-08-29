@@ -47,6 +47,7 @@ test-results/
 assets-source/
 **/*.blend
 **/*.blend1
+tools/blender/digital-residence/textures/generated/
 
 # Caches
 .cache/
