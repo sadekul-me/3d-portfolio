@@ -137,7 +137,7 @@ def paint_stone(u: float, v: float, x: int, y: int) -> tuple[float, float, float
     mortar = 1.0 if ((x % 88) < 2 or (y % 48) < 2) else 0.0
     vein = 0.035 * fbm(u * 22.0, v * 4.0, 6.1)
     pit = 0.03 * hash_noise(x * 0.51, y * 0.47, 4.4)
-    base = 0.20 + n * 0.10 + vein - pit
+    base = 0.24 + n * 0.09 + vein - pit
     if mortar:
         base *= 0.62
     return (base * 1.04, base * 1.01, base * 0.96)
@@ -146,8 +146,8 @@ def paint_stone(u: float, v: float, x: int, y: int) -> tuple[float, float, float
 def paint_concrete(u: float, v: float, x: int, y: int) -> tuple[float, float, float]:
     n = fbm(u * 6.0, v * 6.0, 8.1)
     speckle = 0.025 * hash_noise(x * 0.37, y * 0.41, 3.0)
-    g = 0.24 + n * 0.08 + speckle
-    return (g * 0.96, g * 0.99, g * 1.05)
+    g = 0.34 + n * 0.08 + speckle
+    return (g * 0.98, g * 0.99, g * 1.02)
 
 
 def paint_paving(u: float, v: float, x: int, y: int) -> tuple[float, float, float]:
@@ -167,8 +167,8 @@ def paint_wood(u: float, v: float, x: int, y: int) -> tuple[float, float, float]
 
 def paint_metal(u: float, v: float, x: int, y: int) -> tuple[float, float, float]:
     n = fbm(u * 22.0, v * 3.0, 11.0)
-    g = 0.22 + n * 0.10
-    return (g * 1.15, g * 0.82, g * 0.55)
+    g = 0.13 + n * 0.05
+    return (g * 0.96, g * 0.98, g * 1.04)
 
 
 def paint_bronze(u: float, v: float, x: int, y: int) -> tuple[float, float, float]:
@@ -389,11 +389,11 @@ def reset_scene() -> None:
     ramp = nodes.new("ShaderNodeValToRGB")
     ramp.location = (-280, 0)
     ramp.color_ramp.elements[0].position = 0.0
-    ramp.color_ramp.elements[0].color = (0.22, 0.18, 0.16, 1.0)
+    ramp.color_ramp.elements[0].color = (0.34, 0.36, 0.38, 1.0)
     mid = ramp.color_ramp.elements.new(0.34)
-    mid.color = (0.10, 0.14, 0.24, 1.0)
+    mid.color = (0.18, 0.22, 0.28, 1.0)
     ramp.color_ramp.elements[-1].position = 1.0
-    ramp.color_ramp.elements[-1].color = (0.035, 0.055, 0.10, 1.0)
+    ramp.color_ramp.elements[-1].color = (0.08, 0.12, 0.18, 1.0)
     bg = nodes.new("ShaderNodeBackground")
     bg.location = (40, 0)
     bg.inputs[1].default_value = 1.55
@@ -430,7 +430,7 @@ def materials() -> dict[str, bpy.types.Material]:
     grass_img = make_image("TEX_Plant_Grass", 512, paint_grass)
     mats = {
         "stone": textured_material(
-            "MAT_Stone_Black", stone_img, roughness=0.62, scale=2.4, bump_strength=0.22
+            "MAT_Stone_Graphite", stone_img, roughness=0.58, scale=2.2, bump_strength=0.18
         ),
         "concrete": textured_material(
             "MAT_Concrete_Graphite", concrete_img, roughness=0.54, scale=2.1, bump_strength=0.12
@@ -451,19 +451,20 @@ def materials() -> dict[str, bpy.types.Material]:
             "MAT_Metal_Bronze", bronze_img, metallic=0.82, roughness=0.32, scale=4.2, bump_strength=0.06
         ),
         "metal_dark": untextured_material("MAT_Metal_Dark", color=(0.10, 0.105, 0.11), metallic=0.28, roughness=0.40),
+        "clay": untextured_material("MAT_Clay_Neutral", color=(0.52, 0.50, 0.47), roughness=0.72),
         "glass": untextured_material(
             "MAT_Glass_Smoked",
-            color=(0.14, 0.16, 0.18),
-            roughness=0.04,
+            color=(0.16, 0.165, 0.17),
+            roughness=0.045,
             transmission=0.0,
-            alpha=0.16,
+            alpha=0.18,
         ),
         "glass_clear": untextured_material(
             "MAT_Glass_Clear",
-            color=(0.18, 0.20, 0.22),
+            color=(0.20, 0.205, 0.21),
             roughness=0.03,
             transmission=0.0,
-            alpha=0.09,
+            alpha=0.10,
         ),
         "led_warm": untextured_material(
             "MAT_LED_Warm",
@@ -489,26 +490,34 @@ def materials() -> dict[str, bpy.types.Material]:
         "interior_wall": untextured_material("MAT_Interior_Wall", color=(0.42, 0.36, 0.30), roughness=0.62),
         "sign": untextured_material(
             "MAT_Sign_Champagne",
-            color=(0.68, 0.54, 0.36),
-            metallic=0.88,
-            roughness=0.28,
-            emission=(0.92, 0.72, 0.38),
-            emission_strength=0.95,
+            color=(0.72, 0.64, 0.52),
+            metallic=0.92,
+            roughness=0.32,
+            emission=(0.36, 0.30, 0.22),
+            emission_strength=0.16,
         ),
         "sign_back": untextured_material(
             "MAT_Sign_Backlight",
-            color=(0.22, 0.14, 0.07),
-            roughness=0.58,
-            emission=(1.0, 0.68, 0.32),
-            emission_strength=2.8,
+            color=(0.10, 0.08, 0.06),
+            roughness=0.62,
+            emission=(0.72, 0.52, 0.28),
+            emission_strength=0.85,
         ),
         "sign_zone": untextured_material(
             "MAT_Sign_Zone",
-            color=(0.86, 0.88, 0.90),
-            metallic=0.42,
-            roughness=0.32,
-            emission=(0.92, 0.94, 0.96),
-            emission_strength=0.85,
+            color=(0.62, 0.64, 0.66),
+            metallic=0.48,
+            roughness=0.40,
+            emission=(0.28, 0.30, 0.32),
+            emission_strength=0.18,
+        ),
+        "sign_cyan": untextured_material(
+            "MAT_Sign_Cyan",
+            color=(0.14, 0.48, 0.54),
+            metallic=0.28,
+            roughness=0.36,
+            emission=(0.12, 0.55, 0.62),
+            emission_strength=0.72,
         ),
         "water": untextured_material(
             "MAT_Water",
@@ -656,6 +665,92 @@ def join_objects(name: str, objects: list[bpy.types.Object], collection: bpy.typ
     return obj
 
 
+def make_roof(
+    name: str,
+    size: tuple[float, float, float],
+    origin: tuple[float, float, float],
+    mats: dict[str, bpy.types.Material],
+    arch: bpy.types.Collection,
+    facade: bpy.types.Collection,
+    lights: bpy.types.Collection,
+    *,
+    parapet: float = 0.52,
+) -> None:
+    sx, sy, sz = size
+    make_box(name, size, origin, mats["metal"], arch, bevel=True, bevel_width=0.035)
+    south = origin[1] - sy * 0.5
+    make_box(
+        name + "_Fascia",
+        (sx + 0.10, 0.16, 0.22),
+        (origin[0], south + 0.02, origin[2] - 0.14),
+        mats["metal"],
+        arch,
+        bevel=True,
+        bevel_width=0.015,
+    )
+    make_box(
+        name + "_Soffit",
+        (sx - 0.30, sy - 0.28, 0.06),
+        (origin[0], origin[1] + 0.04, origin[2] - 0.02),
+        mats["wood"],
+        facade,
+    )
+    make_box(
+        name + "_Parapet",
+        (sx + 0.08, 0.18, parapet),
+        (origin[0], south + 0.04, origin[2] + sz),
+        mats["metal"],
+        arch,
+        bevel=True,
+        bevel_width=0.012,
+    )
+    make_box(
+        "LIGHT_" + name + "_Cove",
+        (sx - 0.50, 0.045, 0.03),
+        (origin[0], south + 0.22, origin[2] - 0.05),
+        mats["led_warm"],
+        lights,
+        unwrap=False,
+    )
+
+
+def make_curtain(
+    prefix: str,
+    width: float,
+    height: float,
+    origin: tuple[float, float, float],
+    mats: dict[str, bpy.types.Material],
+    glass_col: bpy.types.Collection,
+    facade: bpy.types.Collection,
+    *,
+    module: float = 1.55,
+    smoked: bool = False,
+) -> None:
+    glass_mat = mats["glass"] if smoked else mats["glass_clear"]
+    make_box(prefix, (width, 0.06, height), origin, glass_mat, glass_col)
+    count = max(2, int(round(width / module)))
+    spacing = width / count
+    x0 = origin[0] - width * 0.5 + spacing
+    mullions = []
+    for i in range(count - 1):
+        mullions.append(
+            make_box(
+                f"{prefix}_Mullion_{i+1:02d}",
+                (0.09, 0.18, height),
+                (x0 + i * spacing, origin[1] + 0.07, origin[2]),
+                mats["metal"],
+                facade,
+                exportable=False,
+                unwrap=False,
+            )
+        )
+    if mullions:
+        join_objects(prefix + "_Mullions", mullions, facade)
+    make_box(prefix + "_Head", (width + 0.12, 0.20, 0.14), (origin[0], origin[1] + 0.08, origin[2] + height - 0.04), mats["metal"], facade, bevel=True)
+    make_box(prefix + "_Sill", (width + 0.12, 0.22, 0.12), (origin[0], origin[1] + 0.08, origin[2]), mats["metal"], facade)
+    make_box(prefix + "_Transom", (width, 0.16, 0.08), (origin[0], origin[1] + 0.07, origin[2] + height * 0.62), mats["metal"], facade, unwrap=False)
+
+
 def make_empty(name: str, location: tuple[float, float, float], collection: bpy.types.Collection) -> bpy.types.Object:
     empty = bpy.data.objects.new(name, None)
     empty.empty_display_type = "PLAIN_AXES"
@@ -666,23 +761,48 @@ def make_empty(name: str, location: tuple[float, float, float], collection: bpy.
     return empty
 
 
-_SIGN_FONT = None
+_SIGN_FONT_BOLD = None
+_SIGN_FONT_BOOK = None
 
 
-def sign_font():
-    global _SIGN_FONT
-    if _SIGN_FONT is not None:
-        return _SIGN_FONT
-    for candidate in (
-        Path(r"C:\Windows\Fonts\segoeuib.ttf"),
-        Path(r"C:\Windows\Fonts\calibrib.ttf"),
-        Path(r"C:\Windows\Fonts\arialbd.ttf"),
-        Path(r"C:\Windows\Fonts\arial.ttf"),
-    ):
+def _load_font(candidates: tuple[Path, ...]):
+    for candidate in candidates:
         if candidate.exists():
-            _SIGN_FONT = bpy.data.fonts.load(str(candidate))
-            return _SIGN_FONT
+            return bpy.data.fonts.load(str(candidate))
     return None
+
+
+def sign_font_bold():
+    global _SIGN_FONT_BOLD
+    if _SIGN_FONT_BOLD is not None:
+        return _SIGN_FONT_BOLD
+    _SIGN_FONT_BOLD = _load_font(
+        (
+            Path(r"C:\Windows\Fonts\segoeuib.ttf"),
+            Path(r"C:\Windows\Fonts\calibrib.ttf"),
+            Path(r"C:\Windows\Fonts\arialbd.ttf"),
+        )
+    )
+    return _SIGN_FONT_BOLD
+
+
+def sign_font_book():
+    global _SIGN_FONT_BOOK
+    if _SIGN_FONT_BOOK is not None:
+        return _SIGN_FONT_BOOK
+    _SIGN_FONT_BOOK = _load_font(
+        (
+            Path(r"C:\Windows\Fonts\segoeui.ttf"),
+            Path(r"C:\Windows\Fonts\calibri.ttf"),
+            Path(r"C:\Windows\Fonts\arial.ttf"),
+        )
+    )
+    return _SIGN_FONT_BOOK or sign_font_bold()
+
+
+def cap_size(meters: float) -> float:
+    """Blender text size that yields approximately `meters` of capital height."""
+    return meters / 0.43
 
 
 def face_basis(normal: Vector) -> Matrix:
@@ -714,8 +834,10 @@ def make_face_lettering(
     mat: bpy.types.Material,
     collection: bpy.types.Collection,
     offset: float = 0.018,
-    space: float = 0.90,
+    space: float = 0.94,
     bevel_depth: float | None = None,
+    align_x: str = "CENTER",
+    weight: str = "bold",
 ) -> bpy.types.Object:
     bpy.ops.object.text_add(location=(0.0, 0.0, 0.0))
     obj = bpy.context.active_object
@@ -723,11 +845,13 @@ def make_face_lettering(
     curve.body = body
     curve.size = size
     curve.extrude = extrude
-    curve.bevel_depth = bevel_depth if bevel_depth is not None else min(0.0018, max(0.0006, extrude * 0.28))
+    curve.bevel_depth = (
+        bevel_depth if bevel_depth is not None else max(0.0006, min(0.010, size * 0.006, extrude * 0.32))
+    )
     curve.space_character = space
-    curve.align_x = "CENTER"
+    curve.align_x = align_x
     curve.align_y = "CENTER"
-    font = sign_font()
+    font = sign_font_book() if weight == "book" else sign_font_bold()
     if font is not None:
         curve.font = font
     select_only(obj)
@@ -897,79 +1021,184 @@ def build_island_terrain(mats: dict[str, bpy.types.Material]) -> None:
     join_objects("ENV_Shore_Breakup", rocks, ground)
 
 
+def make_zone_plaque(
+    mats: dict[str, bpy.types.Material],
+    collection: bpy.types.Collection,
+    *,
+    slot_name: str,
+    number: str,
+    title_lines: tuple[str, ...],
+    tagline: str,
+    loc: tuple[float, float, float],
+    size: tuple[float, float, float],
+) -> None:
+    south = loc[1] - size[1] * 0.5
+    left = loc[0] - size[0] * 0.38
+    make_box(slot_name, size, loc, mats["metal_dark"], collection, bevel=True, bevel_width=0.012)
+    make_box(
+        slot_name + "_Bed",
+        (size[0] - 0.16, 0.028, size[2] - 0.16),
+        (loc[0], south + 0.038, loc[2] + 0.08),
+        mats["sign_back"],
+        collection,
+        bevel=False,
+        unwrap=False,
+    )
+    top = loc[2] + size[2]
+    make_face_lettering(
+        slot_name + "_No",
+        number,
+        face_point=(left, south, top - 0.20),
+        normal=(0.0, -1.0, 0.0),
+        size=cap_size(0.18),
+        extrude=0.010,
+        mat=mats["sign_cyan"],
+        collection=collection,
+        offset=0.016,
+        space=1.04,
+        bevel_depth=0.0012,
+        align_x="LEFT",
+        weight="bold",
+    )
+    line_h = 0.28 if len(title_lines) == 1 else 0.26
+    title_top = top - 0.46
+    for index, line in enumerate(title_lines):
+        make_face_lettering(
+            slot_name + f"_Title_{index+1:02d}",
+            line,
+            face_point=(left, south, title_top - index * (line_h + 0.07)),
+            normal=(0.0, -1.0, 0.0),
+            size=cap_size(line_h),
+            extrude=0.014,
+            mat=mats["sign"],
+            collection=collection,
+            offset=0.018,
+            space=1.00,
+            bevel_depth=0.0020,
+            align_x="LEFT",
+            weight="bold",
+        )
+    make_face_lettering(
+        slot_name + "_Tag",
+        tagline,
+        face_point=(left, south, loc[2] + 0.18),
+        normal=(0.0, -1.0, 0.0),
+        size=cap_size(0.11),
+        extrude=0.005,
+        mat=mats["sign_zone"],
+        collection=collection,
+        offset=0.014,
+        space=1.06,
+        bevel_depth=0.0006,
+        align_x="LEFT",
+        weight="book",
+    )
+
+
 def build_portfolio_bays(mats: dict[str, bpy.types.Material]) -> None:
     facade = col("02_FACADE")
-    props = col("09_PROPS")
-    zones = [
-        ("ENV_Bay_Engineering", "PROP_Zone_02", "02", "ENGINEERING WING", (2.95, 0.28, 1.85), (-16.8, -7.15, 6.8)),
-        ("ENV_Bay_AILab", "PROP_Zone_03", "03", "AI LAB", (2.85, 0.28, 1.78), (16.6, -6.4, 9.4)),
-        ("ENV_Bay_Projects", "PROP_Zone_04", "04", "PROJECTS GALLERY", (2.65, 0.26, 1.55), (8.8, -7.55, 6.35)),
-        ("ENV_Bay_Architecture", "PROP_Zone_05", "05", "ARCHITECTURE CORE", (2.65, 0.26, 1.52), (-8.4, -7.45, 5.15)),
-        ("ENV_Bay_Command", "PROP_Zone_06", "06", "COMMAND CENTER", (3.1, 0.26, 1.62), (2.4, -4.2, 12.35)),
+    depth = 0.10
+    plaques = [
+        {
+            "slot_name": "SIGN_SLOT_Identity",
+            "number": "01",
+            "title_lines": ("IDENTITY", "ATRIUM"),
+            "tagline": "Arrive. Belong. Begin.",
+            "loc": (-8.05, -4.20 + depth * 0.5, 3.05),
+            "size": (2.15, depth, 1.48),
+        },
+        {
+            "slot_name": "SIGN_SLOT_Engineering",
+            "number": "02",
+            "title_lines": ("ENGINEERING", "WING"),
+            "tagline": "Build. Architect. Solve.",
+            "loc": (-17.22, -9.72 + depth * 0.5, 6.28),
+            "size": (1.92, depth, 1.52),
+        },
+        {
+            "slot_name": "SIGN_SLOT_AILab",
+            "number": "03",
+            "title_lines": ("AI LAB",),
+            "tagline": "Models. Agents. Systems.",
+            "loc": (15.85, -1.15 + depth * 0.5, 10.05),
+            "size": (2.15, depth, 1.36),
+        },
+        {
+            "slot_name": "SIGN_SLOT_Projects",
+            "number": "04",
+            "title_lines": ("PROJECTS", "GALLERY"),
+            "tagline": "Selected Work.",
+            "loc": (13.55, -4.55 + depth * 0.5, 4.05),
+            "size": (2.15, depth, 1.48),
+        },
+        {
+            "slot_name": "SIGN_SLOT_Architecture",
+            "number": "05",
+            "title_lines": ("ARCHITECTURE", "CORE"),
+            "tagline": "Spaces. Structure. Craft.",
+            "loc": (-13.25, -4.20 + depth * 0.5, 2.85),
+            "size": (2.15, depth, 1.48),
+        },
+        {
+            "slot_name": "SIGN_SLOT_Command",
+            "number": "06",
+            "title_lines": ("COMMAND", "CENTER"),
+            "tagline": "Live State.",
+            "loc": (3.55, -1.35 + depth * 0.5, 10.08),
+            "size": (2.15, depth, 1.48),
+        },
     ]
-    for name, zone_id, number, title, size, loc in zones:
-        make_box(name, size, loc, mats["bronze"], facade, bevel=True, bevel_width=0.03)
-        make_box(
-            name + "_Recess",
-            (size[0] - 0.22, 0.08, size[2] - 0.28),
-            (loc[0], loc[1] - 0.12, loc[2] + 0.14),
-            mats["metal_dark"],
-            facade,
-        )
-        front_y = loc[1] - size[1] * 0.5
-        make_face_lettering(
-            zone_id + "_No",
-            number,
-            face_point=(loc[0], front_y, loc[2] + size[2] - 0.10),
-            normal=(0.0, -1.0, 0.0),
-            size=0.22,
-            extrude=0.008,
-            mat=mats["sign_zone"],
-            collection=props,
-            offset=0.018,
-            space=0.92,
-            bevel_depth=0.0012,
-        )
-        make_face_lettering(
-            zone_id + "_Title",
-            title,
-            face_point=(loc[0], front_y, loc[2] + 0.10),
-            normal=(0.0, -1.0, 0.0),
-            size=0.11,
-            extrude=0.005,
-            mat=mats["sign_zone"],
-            collection=props,
-            offset=0.018,
-            space=0.94,
-            bevel_depth=0.0008,
-        )
+    for plaque in plaques:
+        make_zone_plaque(mats, facade, **plaque)
 
 
 def build_stairs(mats: dict[str, bpy.types.Material]) -> None:
     arch = col("01_ARCHITECTURE")
     lights = col("10_LIGHTS")
-    make_box("ENV_Entrance_Platform", (22.4, 11.2, 1.55), (0.0, -0.4, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.06)
-    make_box("ENV_Terrace_Front", (18.4, 3.2, 0.18), (0.0, -6.7, 1.55), mats["paving"], arch, bevel=True)
+    # Stepped foundations — not a single plaza pad.
+    make_box("ENV_Foundation_Atrium", (26.5, 16.8, 1.80), (0.8, 2.4, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.07)
+    make_box("ENV_Foundation_West", (15.4, 13.2, 1.15), (-14.8, 1.4, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.06)
+    make_box("ENV_Foundation_East", (14.8, 12.4, 1.40), (14.6, 1.8, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.06)
+    make_box("ENV_Foundation_Retain_S", (34.0, 0.72, 2.55), (0.4, -9.55, -0.55), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Foundation_Retain_SW", (0.72, 10.8, 2.15), (-16.6, -5.4, -0.20), mats["stone"], arch, bevel=True)
+    make_box("ENV_Foundation_Shelf_W", (9.4, 6.2, 0.85), (-18.4, -6.8, 0.0), mats["stone"], arch, bevel=True)
+    make_box("ENV_Monolith_Terrace", (9.2, 11.4, 0.95), (-24.6, 0.8, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Entrance_Platform", (18.4, 8.6, 0.18), (0.0, -2.35, 1.80), mats["paving"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Terrace_Arrival", (12.6, 2.8, 0.14), (0.0, -7.15, 1.80), mats["paving"], arch, bevel=True)
     treads = []
+    nosings = []
     tread_lights = []
-    for i in range(11):
+    for i in range(12):
+        y = -8.05 - i * 0.42
+        z = 1.80 - i * 0.15
         treads.append(
             make_box(
                 f"ENV_Stairs_Tread_{i:02d}",
-                (16.6, 0.40, 0.14),
-                (0.0, -7.45 - i * 0.40, i * 0.14),
+                (6.50, 0.40, 0.15),
+                (0.0, y, z),
                 mats["stone"],
                 arch,
                 bevel=True,
-                bevel_width=0.01,
+                bevel_width=0.012,
                 exportable=False,
+            )
+        )
+        nosings.append(
+            make_box(
+                f"ENV_Stairs_Nosing_{i:02d}",
+                (6.50, 0.04, 0.03),
+                (0.0, y - 0.20, z + 0.15),
+                mats["metal"],
+                arch,
+                exportable=False,
+                unwrap=False,
             )
         )
         tread_lights.append(
             make_box(
                 f"LIGHT_Stair_{i:02d}",
-                (15.2, 0.03, 0.02),
-                (0.0, -7.32 - i * 0.40, 0.13 + i * 0.14),
+                (5.8, 0.03, 0.02),
+                (0.0, y + 0.12, z + 0.14),
                 mats["led_warm"],
                 lights,
                 exportable=False,
@@ -977,44 +1206,83 @@ def build_stairs(mats: dict[str, bpy.types.Material]) -> None:
             )
         )
     join_objects("ENV_Entrance_Steps", treads, arch)
+    join_objects("ENV_Entrance_Nosings", nosings, arch)
     join_objects("LIGHT_Stair_Wash", tread_lights, lights)
-    make_box("ENV_Stair_Cheek_L", (0.46, 4.6, 1.7), (-8.45, -9.4, 0.0), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Stair_Cheek_R", (0.46, 4.6, 1.7), (8.45, -9.4, 0.0), mats["bronze"], arch, bevel=True)
+    make_box("ENV_Stair_Cheek_L", (0.55, 5.4, 2.05), (-3.52, -10.35, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Stair_Cheek_R", (0.55, 5.4, 2.05), (3.52, -10.35, 0.0), mats["stone"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Approach_Landing", (7.2, 7.4, 0.12), (0.0, -17.6, 0.08), mats["paving"], arch, bevel=True)
 
 
 def build_masses(mats: dict[str, bpy.types.Material]) -> None:
     arch = col("01_ARCHITECTURE")
     facade = col("02_FACADE")
-    # Level 1 — double-height lobby bar, set back from the portico.
-    make_box("ENV_Residence_Main", (38.4, 13.6, 5.6), (0.5, 9.6, 1.55), mats["concrete"], arch, bevel=True, bevel_width=0.08)
-    make_box("ENV_Lobby_Wall_L", (0.48, 8.2, 5.5), (-5.15, 3.4, 1.55), mats["stone"], arch, bevel=True)
-    make_box("ENV_Lobby_Wall_R", (0.48, 8.2, 5.5), (5.15, 3.4, 1.55), mats["stone"], arch, bevel=True)
-    make_box("ENV_Volume_WestWing", (14.6, 15.6, 8.9), (-18.4, 8.5, 1.55), mats["stone"], arch, bevel=True, bevel_width=0.07)
-    make_box("ENV_Volume_WestTower", (5.6, 6.4, 16.6), (-22.4, 11.2, 1.55), mats["stone"], arch, bevel=True, bevel_width=0.06)
-    make_box("ENV_Volume_EastGlass", (10.4, 11.6, 16.4), (19.4, 7.9, 1.55), mats["concrete"], arch, bevel=True, bevel_width=0.05)
-    make_box("ENV_Volume_Core", (5.8, 6.6, 16.8), (0.2, 11.4, 1.55), mats["stone"], arch, bevel=True)
-    # Level 2 — deeper south cantilever over the portico.
-    make_box("ENV_Volume_Cantilever", (32.0, 15.2, 3.9), (5.1, 0.2, 7.35), mats["concrete"], arch, bevel=True, bevel_width=0.08)
-    make_box("ENV_Balcony_L2", (22.4, 3.4, 0.16), (0.2, -8.15, 7.35), mats["paving"], arch, bevel=True)
-    make_box("ENV_Volume_WestUpper", (11.2, 10.8, 3.8), (-17.6, 6.9, 10.45), mats["stone"], arch, bevel=True, bevel_width=0.05)
-    # Level 3 — penthouse brought south so the third storey reads in the hero.
-    make_box("ENV_Volume_Penthouse", (20.4, 11.2, 3.6), (3.4, 1.8, 11.3), mats["stone"], arch, bevel=True, bevel_width=0.06)
-    make_box("ENV_Balcony_L3", (18.4, 2.8, 0.16), (2.6, -4.9, 11.3), mats["paving"], arch, bevel=True)
-    make_box("ENV_Volume_WestLantern", (6.6, 6.8, 4.6), (-18.4, 7.0, 14.25), mats["stone"], arch, bevel=True, bevel_width=0.05)
-    make_box("ENV_Roof_Terrace", (22.4, 12.2, 0.16), (3.8, 2.2, 14.9), mats["paving"], arch, bevel=True)
-    make_box("ENV_Roof_Main", (40.0, 18.4, 0.32), (0.5, 7.4, 7.15), mats["concrete"], arch, bevel=True)
-    make_box("ENV_Roof_Cantilever", (33.6, 17.4, 0.28), (5.1, -0.8, 11.25), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Roof_East", (13.0, 14.2, 0.28), (19.4, 6.5, 17.95), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Roof_Penthouse", (21.2, 11.8, 0.24), (3.4, 1.8, 14.9), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Roof_WestLantern", (7.0, 7.2, 0.22), (-18.4, 7.0, 18.85), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Canopy_Entrance", (17.2, 8.2, 0.18), (0.0, -6.8, 5.55), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Canopy_Soffit", (16.6, 7.8, 0.05), (0.0, -6.8, 5.44), mats["wood"], facade)
-    make_box("ENV_Parapet_Cantilever", (33.8, 0.22, 0.55), (5.1, -9.45, 11.52), mats["bronze"], arch)
-    make_box("ENV_Parapet_East", (13.2, 0.22, 0.62), (19.4, -0.55, 18.23), mats["bronze"], arch)
-    make_box("ENV_Parapet_Penthouse", (21.4, 0.18, 0.42), (3.4, -4.05, 15.14), mats["bronze"], arch)
-    make_box("ENV_Roof_Monitor", (7.4, 3.6, 1.55), (3.4, 4.8, 15.14), mats["concrete"], arch, bevel=True)
-    make_box("ENV_Reveal_L1L2", (31.4, 14.8, 0.08), (5.1, 0.2, 7.22), mats["bronze"], facade)
-    make_box("ENV_Reveal_L2L3", (20.0, 10.8, 0.08), (3.4, 1.8, 11.18), mats["bronze"], facade)
+    lights = col("10_LIGHTS")
+    # Vertical spine — one core from arrival through Command.
+    make_box("ENV_Spine_Core", (5.40, 7.40, 11.05), (0.0, 5.55, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.08)
+    # Identity Atrium — double-height chamber grown around the spine.
+    make_box("ENV_Atrium_Floor", (14.6, 12.8, 0.22), (0.0, 2.10, 1.80), mats["stone"], arch, bevel=True)
+    make_box("ENV_Atrium_Wall_L", (0.72, 12.2, 7.60), (-6.95, 2.20, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Atrium_Wall_R", (0.72, 12.2, 7.60), (6.95, 2.20, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Atrium_Back", (14.6, 0.70, 7.60), (0.0, 8.15, 1.80), mats["stone"], arch, bevel=True)
+    make_box("ENV_Atrium_Mezzanine", (10.2, 3.40, 0.22), (0.0, 4.85, 5.60), mats["concrete"], arch, bevel=True)
+    make_box("ENV_Atrium_Portal_L", (1.35, 1.70, 7.55), (-4.55, -3.85, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Atrium_Portal_R", (1.35, 1.70, 7.55), (4.55, -3.85, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.05)
+    # Architecture Core — heaviest L0 mass, west of atrium, shared west wall.
+    make_box("ENV_Architecture_Core", (12.6, 15.8, 3.80), (-13.25, 3.70, 1.80), mats["stone"], arch, bevel=True, bevel_width=0.08)
+    make_box("ENV_Architecture_Link", (2.40, 10.4, 3.80), (-7.40, 3.40, 1.80), mats["stone"], arch, bevel=True)
+    # Engineering — L1 volume grown from the core, cantilever explained by shear + beam + columns.
+    make_box("ENV_Engineering_Body", (15.4, 13.2, 3.80), (-16.55, 3.10, 5.60), mats["concrete"], arch, bevel=True, bevel_width=0.07)
+    make_box("ENV_Engineering_Shear", (0.62, 16.4, 9.40), (-24.15, 1.10, 0.0), mats["concrete"], arch, bevel=True, bevel_width=0.05)
+    make_box("ENV_Engineering_Beam", (15.0, 0.72, 0.72), (-16.55, -3.50, 8.68), mats["metal"], arch, bevel=True, bevel_width=0.03)
+    make_box("ENV_Engineering_Backspan", (4.20, 8.6, 3.80), (-8.40, 4.20, 5.60), mats["concrete"], arch, bevel=True)
+    make_box("ENV_Engineering_Cantilever", (14.8, 9.40, 0.48), (-16.55, -5.55, 8.92), mats["concrete"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Engineering_Soffit", (14.2, 8.90, 0.07), (-16.55, -5.55, 8.86), mats["wood"], facade)
+    for i, x in enumerate((-21.4, -16.55, -11.7)):
+        make_box(
+            f"ENV_Engineering_Col_{i+1:02d}",
+            (0.48, 0.48, 8.92),
+            (x, -7.85, 0.0),
+            mats["metal"],
+            arch,
+            bevel=True,
+            bevel_width=0.02,
+        )
+        make_box(
+            f"ENV_Engineering_ColBase_{i+1:02d}",
+            (0.72, 0.72, 0.28),
+            (x, -7.85, 0.0),
+            mats["stone"],
+            arch,
+            bevel=True,
+        )
+    # Projects Gallery — L0+L1 east of atrium, same roof datum.
+    make_box("ENV_Projects_Gallery", (13.4, 14.2, 7.60), (13.55, 2.55, 1.80), mats["concrete"], arch, bevel=True, bevel_width=0.06)
+    make_box("ENV_Projects_Link", (2.50, 10.6, 7.60), (7.40, 2.80, 1.80), mats["concrete"], arch, bevel=True)
+    make_box("ENV_Terrace_Projects", (12.8, 3.10, 0.16), (13.55, -5.85, 1.80), mats["paving"], arch, bevel=True)
+    # AI Lab — set back on the gallery roof, carried by the gallery mass.
+    make_box("ENV_AI_Lab", (11.6, 11.4, 3.45), (15.85, 4.55, 9.40), mats["metal_dark"], arch, bevel=True, bevel_width=0.06)
+    make_box("ENV_AI_Lab_Core", (0.55, 10.2, 3.45), (10.25, 4.40, 9.40), mats["metal_dark"], arch, bevel=True)
+    make_box("ENV_AI_Lab_Return_L", (0.42, 0.55, 3.45), (10.25, -1.05, 9.40), mats["metal"], arch, bevel=True)
+    make_box("ENV_AI_Lab_Return_R", (0.42, 0.55, 3.45), (21.45, -1.05, 9.40), mats["metal"], arch, bevel=True)
+    # Command Center — privileged L2, spine punches through, set back from atrium glass.
+    make_box("ENV_Command_Center", (16.6, 11.2, 3.45), (3.55, 4.25, 9.40), mats["stone"], arch, bevel=True, bevel_width=0.06)
+    make_box("ENV_Command_Return_L", (0.48, 0.55, 3.45), (-4.55, -1.25, 9.40), mats["metal"], arch, bevel=True)
+    make_box("ENV_Command_Return_R", (0.48, 0.55, 3.45), (11.65, -1.25, 9.40), mats["metal"], arch, bevel=True)
+    # Shared terraces / floor plates that stitch wings together.
+    make_box("ENV_Terrace_L1", (28.5, 3.40, 0.18), (-2.4, -6.35, 5.60), mats["paving"], arch, bevel=True, bevel_width=0.03)
+    make_box("ENV_Datum_L1", (38.4, 0.58, 0.42), (-1.2, -6.55, 5.60), mats["concrete"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Terrace_L2", (22.4, 2.55, 0.16), (6.8, -2.55, 9.40), mats["paving"], arch, bevel=True)
+    make_box("ENV_Plate_Atrium", (16.8, 14.2, 0.22), (0.0, 2.10, 9.18), mats["concrete"], arch, bevel=True, bevel_width=0.03)
+    make_roof("ENV_Roof_AtriumEdge", (16.8, 5.2, 0.42), (0.0, -3.05, 9.40), mats, arch, facade, lights, parapet=0.42)
+    make_roof("ENV_Roof_Engineering", (16.2, 20.4, 0.42), (-16.55, 0.55, 9.40), mats, arch, facade, lights, parapet=0.50)
+    make_roof("ENV_Roof_AILab", (12.2, 12.0, 0.38), (15.85, 4.55, 12.85), mats, arch, facade, lights, parapet=0.46)
+    make_roof("ENV_Roof_Command", (17.4, 11.8, 0.42), (3.55, 4.25, 12.85), mats, arch, facade, lights, parapet=0.55)
+    # Monumental canopy — thick, back-spanned into the portal lintel.
+    make_box("ENV_Canopy_Entrance", (16.8, 7.40, 0.46), (0.0, -6.05, 6.85), mats["metal"], arch, bevel=True, bevel_width=0.04)
+    make_box("ENV_Canopy_Soffit", (16.2, 7.00, 0.07), (0.0, -6.05, 6.80), mats["wood"], facade)
+    make_box("ENV_Canopy_Fascia", (16.9, 0.16, 0.22), (0.0, -9.72, 6.71), mats["metal"], arch, bevel=True)
+    make_box("ENV_Canopy_Backspan", (10.4, 2.20, 0.46), (0.0, -3.55, 6.85), mats["metal"], arch, bevel=True)
+    make_box("LIGHT_Canopy_Cove", (15.6, 0.05, 0.03), (0.0, -9.45, 6.82), mats["led_warm"], lights, unwrap=False)
 
 
 def build_structure(mats: dict[str, bpy.types.Material]) -> None:
@@ -1022,13 +1290,13 @@ def build_structure(mats: dict[str, bpy.types.Material]) -> None:
     lights = col("10_LIGHTS")
     columns = []
     bases = []
-    for i, x in enumerate((-8.0, -4.0, 0.0, 4.0, 8.0)):
+    for i, x in enumerate((-5.40, -2.15, 2.15, 5.40)):
         bases.append(
             make_box(
                 f"ENV_ColumnBase_{i+1:02d}",
-                (0.58, 0.58, 0.28),
-                (x, -4.15, 1.55),
-                mats["bronze"],
+                (0.70, 0.70, 0.30),
+                (x, -6.85, 1.80),
+                mats["stone"],
                 facade,
                 bevel=True,
                 bevel_width=0.03,
@@ -1038,9 +1306,9 @@ def build_structure(mats: dict[str, bpy.types.Material]) -> None:
         columns.append(
             make_box(
                 f"ENV_Column_{i+1:02d}",
-                (0.38, 0.38, 5.52),
-                (x, -4.15, 1.83),
-                mats["metal_dark"],
+                (0.46, 0.46, 5.05),
+                (x, -6.85, 2.10),
+                mats["metal"],
                 facade,
                 bevel=True,
                 bevel_width=0.02,
@@ -1049,178 +1317,103 @@ def build_structure(mats: dict[str, bpy.types.Material]) -> None:
         )
     join_objects("ENV_Portico_ColumnBases", bases, facade)
     join_objects("ENV_Portico_Columns", columns, facade)
-    make_box("ENV_Frame_East_L", (0.22, 13.4, 16.4), (13.2, 6.4, 1.55), mats["bronze"], facade)
-    make_box("ENV_Frame_East_R", (0.22, 13.4, 16.4), (25.6, 6.4, 1.55), mats["bronze"], facade)
-    make_box("ENV_Frame_Lobby_Head", (10.2, 0.18, 0.22), (0.0, -0.92, 7.05), mats["bronze"], facade)
-    make_box("ENV_Frame_Lobby_Sill", (10.2, 0.18, 0.12), (0.0, -0.92, 1.52), mats["bronze"], facade)
-    make_box("ENV_Frame_L2_Head", (31.2, 0.16, 0.18), (5.1, -7.35, 11.18), mats["bronze"], facade)
-    make_box("ENV_Frame_L3_Head", (19.0, 0.14, 0.16), (2.6, -6.25, 14.85), mats["bronze"], facade)
+    make_box("ENV_Frame_Portal_L", (0.28, 1.55, 7.40), (-3.95, -3.85, 1.82), mats["metal"], facade, bevel=True)
+    make_box("ENV_Frame_Portal_R", (0.28, 1.55, 7.40), (3.95, -3.85, 1.82), mats["metal"], facade, bevel=True)
+    make_box("ENV_Frame_Lobby_Head", (8.40, 0.42, 0.32), (0.0, -3.85, 9.05), mats["metal"], facade, bevel=True)
+    make_box("ENV_Frame_Lobby_Sill", (8.40, 0.28, 0.14), (0.0, -3.85, 1.82), mats["metal"], facade)
     fins = []
-    for i in range(10):
+    for i in range(7):
         fins.append(
             make_box(
                 f"ENV_Fin_West_{i+1:02d}",
-                (0.12, 3.8, 8.4),
-                (-24.8 + i * 1.42, -0.35, 1.9),
-                mats["bronze"],
+                (0.12, 2.85, 3.55),
+                (-23.4 + i * 1.45, -3.55, 1.95),
+                mats["metal"],
                 facade,
                 exportable=False,
                 unwrap=False,
             )
         )
     join_objects("ENV_West_Fins", fins, facade)
-    balcony_fins = []
-    for i in range(9):
-        balcony_fins.append(
+    eng_fins = []
+    for i in range(6):
+        eng_fins.append(
             make_box(
-                f"ENV_Fin_Balcony_{i+1:02d}",
-                (0.08, 0.08, 1.05),
-                (-8.0 + i * 2.0, -9.7, 7.5),
-                mats["bronze"],
+                f"ENV_Fin_Engineering_{i+1:02d}",
+                (0.10, 1.85, 3.55),
+                (-22.6 + i * 2.15, -8.85, 5.70),
+                mats["metal"],
                 facade,
                 exportable=False,
                 unwrap=False,
             )
         )
-    join_objects("ENV_Balcony_Fins", balcony_fins, facade)
-    louvers = []
-    for i in range(11):
-        louvers.append(
-            make_box(
-                f"ENV_RoofLouver_{i+1:02d}",
-                (0.14, 15.6, 0.36),
-                (-8.8 + i * 2.4, 0.2, 14.72),
-                mats["bronze"],
-                facade,
-                exportable=False,
-                unwrap=False,
-            )
-        )
-    join_objects("ENV_Roof_Louvers", louvers, facade)
-    soffits = []
-    for i in range(8):
-        soffits.append(
-            make_box(
-                f"ENV_SoffitReveal_{i+1:02d}",
-                (0.05, 12.2, 0.03),
-                (-8.4 + i * 3.7, 0.2, 7.28),
-                mats["bronze"],
-                facade,
-                exportable=False,
-                unwrap=False,
-            )
-        )
-    join_objects("ENV_Cantilever_SoffitReveals", soffits, facade)
-    joints = []
-    for i in range(10):
-        joints.append(
-            make_box(
-                f"ENV_FacadeJoint_{i+1:02d}",
-                (0.045, 0.06, 5.4),
-                (-10.2 + i * 2.25, -1.15, 1.55),
-                mats["bronze"],
-                facade,
-                exportable=False,
-                unwrap=False,
-            )
-        )
-    join_objects("ENV_Facade_Reveals", joints, facade)
-    make_box("LIGHT_FacadeWash_L", (0.06, 0.04, 4.8), (-16.8, 0.55, 2.1), mats["led_warm"], lights, unwrap=False)
-    make_box("LIGHT_FacadeWash_R", (0.06, 0.04, 4.8), (12.4, 0.55, 2.1), mats["led_warm"], lights, unwrap=False)
+    join_objects("ENV_Engineering_Fins", eng_fins, facade)
+    make_box("LIGHT_FacadeWash_L", (0.05, 0.04, 3.4), (-16.55, -3.6, 2.1), mats["led_warm"], lights, unwrap=False)
+    make_box("LIGHT_FacadeWash_R", (0.05, 0.04, 5.8), (13.55, -4.2, 2.1), mats["led_warm"], lights, unwrap=False)
+    make_box("LIGHT_AILab_Slot", (9.6, 0.04, 0.04), (15.85, -0.85, 12.72), mats["led_cool"], lights, unwrap=False)
+    make_box("LIGHT_SLOT_Entrance_L", (0.04, 1.4, 6.8), (-4.55, -3.55, 1.90), mats["led_warm"], lights, unwrap=False)
+    make_box("LIGHT_SLOT_Entrance_R", (0.04, 1.4, 6.8), (4.55, -3.55, 1.90), mats["led_warm"], lights, unwrap=False)
 
 
 def build_glazing(mats: dict[str, bpy.types.Material]) -> None:
     glass = col("03_GLASS")
     facade = col("02_FACADE")
-    make_box("ENV_Glass_Lobby", (9.4, 0.07, 5.35), (0.0, -0.88, 1.58), mats["glass_clear"], glass)
-    make_box("ENV_Glass_EastCurtain_S", (11.4, 0.07, 15.6), (19.4, 0.05, 1.7), mats["glass"], glass)
-    make_box("ENV_Glass_EastCurtain_E", (0.07, 13.0, 15.6), (25.65, 6.4, 1.7), mats["glass"], glass)
-    make_box("ENV_Glass_Cantilever_S", (30.4, 0.07, 3.5), (5.1, -7.35, 7.5), mats["glass"], glass)
-    make_box("ENV_Glass_Penthouse_S", (18.8, 0.07, 3.25), (3.4, -3.75, 11.4), mats["glass_clear"], glass)
-    make_box("ENV_Glass_Monitor", (7.0, 0.07, 1.28), (3.4, 3.05, 15.3), mats["glass_clear"], glass)
-    make_box("ENV_Glass_WestRibbon_01", (11.2, 0.07, 1.25), (-18.4, 0.55, 3.55), mats["glass"], glass)
-    make_box("ENV_Glass_WestRibbon_02", (11.2, 0.07, 1.25), (-18.4, 0.55, 6.35), mats["glass"], glass)
-    make_box("ENV_Glass_WestRibbon_03", (9.4, 0.07, 1.15), (-17.6, 1.45, 11.4), mats["glass"], glass)
-    make_box("ENV_Glass_WestLantern", (5.8, 0.07, 3.4), (-18.4, 3.55, 14.4), mats["glass_clear"], glass)
+    make_curtain("ENV_Glass_Lobby", 7.85, 7.25, (0.0, -2.45, 1.88), mats, glass, facade, module=1.48)
+    make_curtain("ENV_Glass_Engineering", 13.4, 3.35, (-16.55, -8.35, 5.70), mats, glass, facade, module=1.68, smoked=True)
+    make_curtain("ENV_Glass_Projects", 11.6, 7.15, (13.55, -4.15, 1.88), mats, glass, facade, module=1.65)
+    make_curtain("ENV_Glass_AILab", 10.4, 3.15, (15.85, -0.85, 9.50), mats, glass, facade, module=1.48, smoked=True)
+    make_curtain("ENV_Glass_Command", 15.2, 3.15, (3.55, -1.15, 9.50), mats, glass, facade, module=1.70)
     punches = []
-    for i, z in enumerate((2.9, 5.55, 8.15)):
-        for j in range(4):
+    for i, z in enumerate((2.55, 3.95)):
+        for j in range(3):
             punches.append(
                 make_box(
-                    f"ENV_Glass_WestPunch_{i}{j}",
-                    (1.7, 0.07, 1.18),
-                    (-22.8 + j * 2.55, 0.52, z),
+                    f"ENV_Glass_ArchPunch_{i}{j}",
+                    (1.45, 0.08, 0.95),
+                    (-16.8 + j * 2.15, -4.05, z),
                     mats["glass"],
                     glass,
                     exportable=False,
                     unwrap=False,
                 )
             )
-    join_objects("ENV_Glass_WestPunches", punches, glass)
-    mullions = []
-    for i in range(8):
-        mullions.append(
-            make_box(
-                f"ENV_Mullion_East_{i+1:02d}",
-                (0.07, 0.12, 15.6),
-                (14.2 + i * 1.48, 0.12, 1.7),
-                mats["bronze"],
-                facade,
-                exportable=False,
-                unwrap=False,
-            )
-        )
-    join_objects("ENV_Mullions_East", mullions, facade)
-    lobby_mullions = []
-    for i in range(5):
-        lobby_mullions.append(
-            make_box(
-                f"ENV_Mullion_Lobby_{i+1:02d}",
-                (0.07, 0.12, 5.35),
-                (-3.6 + i * 1.8, -0.82, 1.58),
-                mats["bronze"],
-                facade,
-                exportable=False,
-                unwrap=False,
-            )
-        )
-    join_objects("ENV_Mullions_Lobby", lobby_mullions, facade)
-    make_box("ENV_Transom_Lobby", (9.3, 0.12, 0.08), (0.0, -0.82, 6.85), mats["bronze"], facade, unwrap=False)
-    make_box("ENV_Railing_Front", (18.0, 0.05, 0.95), (0.2, -8.1, 1.72), mats["glass_clear"], glass)
-    make_box("ENV_Railing_Cap", (18.2, 0.08, 0.04), (0.2, -8.1, 2.67), mats["bronze"], facade)
-    make_box("ENV_Railing_L2", (21.8, 0.05, 0.92), (0.2, -9.8, 7.5), mats["glass_clear"], glass)
-    make_box("ENV_Railing_L2_Cap", (22.0, 0.08, 0.04), (0.2, -9.8, 8.42), mats["bronze"], facade)
-    make_box("ENV_Railing_L3", (18.2, 0.05, 0.88), (2.6, -6.25, 11.45), mats["glass_clear"], glass)
-    make_box("ENV_Railing_L3_Cap", (18.4, 0.08, 0.04), (2.6, -6.25, 12.33), mats["bronze"], facade)
+    join_objects("ENV_Glass_Architecture", punches, glass)
+    make_box("ENV_Railing_Arrival", (12.2, 0.05, 1.05), (0.0, -8.45, 1.82), mats["glass_clear"], glass)
+    make_box("ENV_Railing_Arrival_Cap", (12.4, 0.08, 0.05), (0.0, -8.45, 2.87), mats["metal"], facade)
+    make_box("ENV_Railing_L1", (28.0, 0.05, 0.98), (-2.4, -8.00, 5.78), mats["glass_clear"], glass)
+    make_box("ENV_Railing_L1_Cap", (28.2, 0.08, 0.05), (-2.4, -8.00, 6.76), mats["metal"], facade)
+    make_box("ENV_Railing_L2", (21.8, 0.05, 0.92), (6.8, -3.75, 9.56), mats["glass_clear"], glass)
+    make_box("ENV_Railing_L2_Cap", (22.0, 0.08, 0.05), (6.8, -3.75, 10.48), mats["metal"], facade)
 
 
 def build_interior_depth(mats: dict[str, bpy.types.Material]) -> None:
     props = col("09_PROPS")
     lights = col("10_LIGHTS")
-    make_box("ENV_Interior_LobbyCeiling", (9.0, 7.2, 0.06), (0.0, 2.0, 6.95), mats["interior"], lights)
-    make_box("LIGHT_Lobby_Fill", (8.2, 5.8, 0.04), (0.0, 1.8, 6.72), mats["interior"], lights, unwrap=False)
-    make_box("ENV_Interior_LobbyFloor", (9.0, 7.2, 0.08), (0.0, 2.0, 1.56), mats["wood"], props)
-    make_box("ENV_Interior_LobbyBack", (8.8, 0.12, 5.1), (0.0, 5.4, 1.58), mats["interior_wall"], props)
-    make_box("ENV_Interior_Lobby_Wall_L", (0.10, 6.4, 5.0), (-4.4, 2.2, 1.58), mats["interior_wall"], props)
-    make_box("ENV_Interior_Lobby_Wall_R", (0.10, 6.4, 5.0), (4.4, 2.2, 1.58), mats["interior_wall"], props)
-    make_box("PROP_Lobby_Screen", (3.4, 0.08, 1.7), (0.0, 5.28, 3.1), mats["rack"], props)
-    make_box("PROP_Lobby_Bench", (2.8, 0.75, 0.45), (-2.2, 2.5, 1.58), mats["wood"], props, bevel=True)
-    make_box("PROP_Lobby_Console", (1.9, 0.5, 0.9), (2.5, 4.0, 1.58), mats["bronze"], props, bevel=True)
-    make_box("LIGHT_Lobby_Cove", (8.4, 0.04, 0.04), (0.0, 2.0, 6.86), mats["led_warm"], lights)
-    make_box("ENV_Interior_L2Ceiling", (28.8, 11.2, 0.06), (5.1, 0.4, 10.95), mats["interior"], lights)
-    make_box("LIGHT_L2_Fill", (24.0, 8.0, 0.04), (5.1, 0.2, 10.72), mats["interior"], lights, unwrap=False)
-    make_box("ENV_Interior_L2Floor", (28.8, 11.2, 0.08), (5.1, 0.4, 7.4), mats["wood"], props)
-    make_box("PROP_L2_Lounge", (3.6, 1.2, 0.7), (6.8, -1.6, 7.48), mats["wood"], props, bevel=True)
-    make_box("ENV_Interior_PenthouseCeiling", (19.2, 10.0, 0.05), (3.4, 1.6, 14.75), mats["interior"], lights)
-    make_box("LIGHT_Penthouse_Fill", (16.0, 7.2, 0.04), (3.4, 1.4, 14.52), mats["interior"], lights, unwrap=False)
-    make_box("ENV_Interior_PenthouseFloor", (19.2, 10.0, 0.06), (3.4, 1.6, 11.35), mats["wood"], props)
-    make_box("ENV_Interior_EastCeiling", (10.0, 9.0, 0.06), (19.4, 5.0, 17.6), mats["interior"], lights)
-    make_box("LIGHT_East_Fill", (8.6, 7.0, 0.04), (19.4, 4.8, 17.38), mats["interior"], lights, unwrap=False)
-    make_box("ENV_Interior_EastFloor", (10.0, 9.0, 0.08), (19.4, 5.0, 1.56), mats["interior_wall"], props)
-    make_box("ENV_Interior_EastBack", (9.6, 0.12, 12.8), (19.4, 9.4, 1.7), mats["interior_wall"], props)
-    make_box("ENV_Interior_EastSlab_L2", (9.8, 8.6, 0.12), (19.4, 5.2, 7.25), mats["wood"], props)
-    make_box("ENV_Interior_EastSlab_L3", (9.8, 8.6, 0.12), (19.4, 5.2, 11.15), mats["wood"], props)
-    make_box("PROP_Stair_Hint", (1.5, 3.6, 0.12), (1.9, 5.6, 3.2), mats["bronze"], props, bevel=True)
+    make_box("ENV_Interior_LobbyFloor", (12.8, 10.6, 0.10), (0.0, 2.0, 1.82), mats["wood"], props)
+    make_box("ENV_Interior_LobbyCeiling", (12.8, 10.6, 0.10), (0.0, 2.0, 9.18), mats["interior"], lights)
+    make_box("LIGHT_Lobby_Fill", (10.8, 8.2, 0.05), (0.0, 1.8, 8.95), mats["interior"], lights, unwrap=False)
+    make_box("ENV_Interior_LobbyBack", (12.4, 0.16, 7.10), (0.0, 7.70, 1.88), mats["interior_wall"], props)
+    make_box("ENV_Interior_Lobby_Wall_L", (0.12, 9.4, 7.00), (-6.45, 2.1, 1.88), mats["interior_wall"], props)
+    make_box("ENV_Interior_Lobby_Wall_R", (0.12, 9.4, 7.00), (6.45, 2.1, 1.88), mats["interior_wall"], props)
+    make_box("PROP_Lobby_Screen", (4.2, 0.10, 2.15), (0.0, 7.55, 3.55), mats["rack"], props)
+    make_box("PROP_Lobby_Bench", (3.4, 0.85, 0.48), (-2.6, 0.4, 1.82), mats["wood"], props, bevel=True)
+    make_box("PROP_Lobby_Console", (2.2, 0.58, 0.95), (2.8, 2.4, 1.82), mats["bronze"], props, bevel=True)
+    make_box("PROP_Atrium_Feature", (1.15, 1.15, 2.40), (0.0, 3.2, 1.82), mats["bronze"], props, bevel=True, bevel_width=0.04)
+    make_box("LIGHT_Lobby_Cove", (11.6, 0.05, 0.05), (0.0, 2.0, 9.05), mats["led_warm"], lights)
+    make_box("ENV_Interior_EngineeringFloor", (14.2, 11.6, 0.10), (-16.55, 2.6, 5.62), mats["wood"], props)
+    make_box("ENV_Interior_EngineeringBack", (13.8, 0.14, 3.35), (-16.55, 8.4, 5.70), mats["interior_wall"], props)
+    make_box("ENV_Interior_ProjectsFloor", (12.2, 11.4, 0.10), (13.55, 2.4, 1.82), mats["wood"], props)
+    make_box("ENV_Interior_ProjectsBack", (11.8, 0.14, 7.00), (13.55, 8.4, 1.88), mats["interior_wall"], props)
+    make_box("ENV_Interior_ProjectsSlab", (12.0, 10.8, 0.16), (13.55, 2.6, 5.55), mats["wood"], props)
+    make_box("ENV_Interior_AILabFloor", (10.6, 9.8, 0.10), (15.85, 4.4, 9.42), mats["interior_wall"], props)
+    make_box("ENV_Interior_AILabBack", (10.2, 0.14, 3.10), (15.85, 9.4, 9.50), mats["interior_wall"], props)
+    make_box("ENV_Interior_CommandFloor", (15.6, 9.6, 0.08), (3.55, 4.1, 9.42), mats["wood"], props)
+    make_box("ENV_Interior_CommandCeiling", (15.6, 9.6, 0.06), (3.55, 4.1, 12.72), mats["interior"], lights)
+    make_box("LIGHT_L1_Fill", (12.4, 8.0, 0.04), (-16.55, 2.2, 9.15), mats["interior"], lights, unwrap=False)
+    make_box("LIGHT_Command_Fill", (13.6, 7.2, 0.04), (3.55, 3.8, 12.55), mats["interior"], lights, unwrap=False)
+    make_box("LIGHT_AILab_Fill", (9.2, 6.4, 0.04), (15.85, 4.2, 12.55), mats["interior"], lights, unwrap=False)
+    make_box("PROP_Stair_Hint", (1.55, 4.2, 0.14), (1.55, 5.1, 3.55), mats["bronze"], props, bevel=True)
     racks = []
     edges = []
     for i in range(6):
@@ -1228,7 +1421,7 @@ def build_interior_depth(mats: dict[str, bpy.types.Material]) -> None:
             make_box(
                 f"PROP_ServerHint_{i+1:02d}",
                 (0.52, 0.85, 1.85),
-                (17.2 + (i % 3) * 1.4, 3.8 + (i // 3) * 2.3, 1.75),
+                (11.4 + (i % 3) * 1.45, 3.1 + (i // 3) * 2.1, 1.90),
                 mats["rack"],
                 props,
                 bevel=True,
@@ -1239,7 +1432,7 @@ def build_interior_depth(mats: dict[str, bpy.types.Material]) -> None:
             make_box(
                 f"LIGHT_RackEdge_{i+1:02d}",
                 (0.54, 0.03, 1.7),
-                (17.2 + (i % 3) * 1.4, 3.35 + (i // 3) * 2.3, 1.8),
+                (11.4 + (i % 3) * 1.45, 2.65 + (i // 3) * 2.1, 1.96),
                 mats["led_cool"],
                 lights,
                 exportable=False,
@@ -1255,32 +1448,61 @@ def build_entrance(mats: dict[str, bpy.types.Material]) -> None:
     props = col("09_PROPS")
     lights = col("10_LIGHTS")
     anim = col("14_ANIMATION")
-    make_box("ENV_Portal_Lintel", (10.6, 0.82, 0.38), (0.0, -0.62, 6.95), mats["bronze"], arch, bevel=True)
-    make_box("ENV_Portal_Jamb_L", (0.42, 0.82, 5.2), (-5.0, -0.62, 1.58), mats["bronze"], arch)
-    make_box("ENV_Portal_Jamb_R", (0.42, 0.82, 5.2), (5.0, -0.62, 1.58), mats["bronze"], arch)
-    make_box("LIGHT_Entrance_Warm", (9.8, 0.05, 0.05), (0.0, -1.35, 6.82), mats["led_warm"], lights)
-    make_box("LIGHT_Canopy_Cove", (16.4, 0.05, 0.05), (0.0, -6.8, 5.42), mats["led_warm"], lights)
-    make_box("LIGHT_Cantilever_Cove", (31.4, 0.06, 0.05), (5.1, -7.2, 7.28), mats["led_warm"], lights)
-    make_box("LIGHT_Penthouse_Cove", (19.2, 0.05, 0.04), (3.4, -3.7, 11.22), mats["led_warm"], lights)
-    make_box("LIGHT_EastCrown", (11.6, 0.05, 0.05), (19.4, 0.1, 17.85), mats["led_warm"], lights)
-    make_box("LIGHT_L3_Cove", (17.8, 0.05, 0.04), (2.6, -6.1, 14.82), mats["led_warm"], lights)
-    make_box("LIGHT_WestLantern_Cove", (5.8, 0.04, 0.04), (-18.4, 3.6, 18.7), mats["led_warm"], lights)
-    left = make_box("PROP_Door_Main_L", (2.35, 0.14, 4.85), (-2.4, -0.72, 1.58), mats["metal_dark"], anim, bevel=True, bevel_width=0.01)
-    right = make_box("PROP_Door_Main_R", (2.35, 0.14, 4.85), (2.4, -0.72, 1.58), mats["metal_dark"], anim, bevel=True, bevel_width=0.01)
+    make_box("ENV_Portal_Lintel", (9.4, 1.70, 0.48), (0.0, -3.85, 9.00), mats["metal"], arch, bevel=True, bevel_width=0.03)
+    make_box("ENV_Portal_Jamb_L", (0.55, 1.70, 7.20), (-4.45, -3.85, 1.80), mats["metal"], arch, bevel=True)
+    make_box("ENV_Portal_Jamb_R", (0.55, 1.70, 7.20), (4.45, -3.85, 1.80), mats["metal"], arch, bevel=True)
+    canopy_south = -6.05 - 7.40 * 0.5
+    make_box(
+        "PROP_Residence_NameBar",
+        (7.40, 0.12, 0.78),
+        (0.0, canopy_south - 0.04, 6.38),
+        mats["metal_dark"],
+        props,
+        bevel=True,
+        bevel_width=0.014,
+    )
+    make_box(
+        "PROP_Residence_NameBed",
+        (6.85, 0.03, 0.52),
+        (0.0, canopy_south - 0.08, 6.50),
+        mats["sign_back"],
+        props,
+        bevel=False,
+        unwrap=False,
+    )
+    make_face_lettering(
+        "PROP_Residence_Name",
+        "DIGITAL RESIDENCE",
+        face_point=(0.0, canopy_south - 0.10, 6.78),
+        normal=(0.0, -1.0, 0.0),
+        size=cap_size(0.42),
+        extrude=0.022,
+        mat=mats["sign"],
+        collection=props,
+        offset=0.020,
+        space=1.04,
+        bevel_depth=0.0032,
+        weight="bold",
+    )
+    make_box("LIGHT_Entrance_Warm", (8.2, 0.06, 0.06), (0.0, -4.55, 8.85), mats["led_warm"], lights)
+    make_box("LIGHT_Cantilever_Cove", (14.0, 0.06, 0.05), (-16.55, -9.85, 8.88), mats["led_warm"], lights)
+    make_box("LIGHT_Command_Cove", (15.4, 0.05, 0.04), (3.55, -1.15, 9.38), mats["led_warm"], lights)
+    make_box("LIGHT_EastCrown", (10.8, 0.05, 0.05), (15.85, -0.85, 12.78), mats["led_cool"], lights)
+    left = make_box("PROP_Door_Main_L", (2.15, 0.16, 6.25), (-2.20, -2.55, 1.82), mats["metal_dark"], anim, bevel=True, bevel_width=0.01)
+    right = make_box("PROP_Door_Main_R", (2.15, 0.16, 6.25), (2.20, -2.55, 1.82), mats["metal_dark"], anim, bevel=True, bevel_width=0.01)
     select_only(left)
-    bpy.context.scene.cursor.location = (-3.55, -0.72, 1.58)
+    bpy.context.scene.cursor.location = (-3.18, -2.55, 1.82)
     bpy.ops.object.origin_set(type="ORIGIN_CURSOR")
     select_only(right)
-    bpy.context.scene.cursor.location = (3.55, -0.72, 1.58)
+    bpy.context.scene.cursor.location = (3.18, -2.55, 1.82)
     bpy.ops.object.origin_set(type="ORIGIN_CURSOR")
     for door, angle in ((left, 82), (right, -82)):
         door.keyframe_insert(data_path="rotation_euler", frame=1)
         door.rotation_euler[2] = math.radians(angle)
         door.keyframe_insert(data_path="rotation_euler", frame=70)
         door.rotation_euler[2] = 0.0
-    make_box("PROP_Door_Handle_L", (0.04, 0.09, 0.62), (-0.22, -0.82, 3.7), mats["bronze"], props, unwrap=False)
-    make_box("PROP_Door_Handle_R", (0.04, 0.09, 0.62), (0.22, -0.82, 3.7), mats["bronze"], props, unwrap=False)
-
+    make_box("PROP_Door_Handle_L", (0.04, 0.09, 0.62), (-0.18, -2.65, 4.15), mats["bronze"], props, unwrap=False)
+    make_box("PROP_Door_Handle_R", (0.04, 0.09, 0.62), (0.18, -2.65, 4.15), mats["bronze"], props, unwrap=False)
 
 def build_boundary_and_gate(mats: dict[str, bpy.types.Material]) -> None:
     boundary = col("05_BOUNDARY")
@@ -1327,32 +1549,6 @@ def build_boundary_and_gate(mats: dict[str, bpy.types.Material]) -> None:
     make_box("LIGHT_Gate_Pillar_R", (0.2, 0.2, 0.05), (4.25, y - 0.62, 3.78), mats["led_warm"], lights)
     make_box("PROP_Residence_Sign", (1.35, 0.10, 0.62), (5.55, y - 0.42, 1.72), mats["metal_dark"], gate, bevel=True)
     make_box("LIGHT_Sign_Reveal", (1.2, 0.02, 0.02), (5.55, y - 0.48, 2.22), mats["led_warm"], lights)
-    make_face_lettering(
-        "PROP_Gate_Name",
-        "DIGITAL RESIDENCE",
-        face_point=(0.0, y - 0.12, 3.28),
-        normal=(0.0, -1.0, 0.0),
-        size=0.26,
-        extrude=0.01,
-        mat=mats["sign"],
-        collection=gate,
-        offset=0.018,
-        space=0.92,
-        bevel_depth=0.0016,
-    )
-    make_face_lettering(
-        "PROP_Gate_Status",
-        "INITIALIZING DIGITAL RESIDENCE",
-        face_point=(0.0, y - 0.12, 2.92),
-        normal=(0.0, -1.0, 0.0),
-        size=0.09,
-        extrude=0.004,
-        mat=mats["sign_zone"],
-        collection=gate,
-        offset=0.018,
-        space=0.92,
-        bevel_depth=0.0007,
-    )
     left_fins = []
     right_fins = []
     for i in range(13):
@@ -1433,7 +1629,7 @@ def make_si_mark(
     obj = bpy.context.active_object
     obj.name = name
     obj.data.name = name
-    obj.scale = (0.26, 0.016, 0.26)
+    obj.scale = (0.18, 0.012, 0.18)
     obj.rotation_euler = (0.0, math.radians(45.0), 0.0)
     select_only(obj)
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
@@ -1463,8 +1659,8 @@ def build_identity(mats: dict[str, bpy.types.Material]) -> None:
     )
     cutter = make_box(
         "TMP_Identity_Recess",
-        (3.55, 0.024, 4.85),
-        (mx, south + 0.008, 7.40),
+        (3.48, 0.042, 4.05),
+        (mx, south + 0.018, 9.35),
         None,
         arch,
         bevel=False,
@@ -1480,123 +1676,116 @@ def build_identity(mats: dict[str, bpy.types.Material]) -> None:
     bevel.angle_limit = math.radians(40)
     bpy.ops.object.modifier_apply(modifier=bevel.name)
     make_box("ENV_Monolith_Plinth", (sx + 0.55, sy + 0.45, 0.28), (mx, my, base), mats["bronze"], arch, bevel=True)
-    make_box("LIGHT_Monolith_Reveal", (3.2, 0.02, 0.03), (mx, south - 0.04, 13.05), mats["led_warm"], lights)
-    make_box("LIGHT_Monolith_Slit_L", (0.03, 0.02, 6.2), (mx - 1.72, south - 0.03, 6.7), mats["led_warm"], lights)
-    make_box("LIGHT_Monolith_Slit_R", (0.03, 0.02, 6.2), (mx + 1.72, south - 0.03, 6.7), mats["led_warm"], lights)
+    make_box("LIGHT_Monolith_Reveal", (3.2, 0.02, 0.03), (mx, south - 0.04, 13.22), mats["led_warm"], lights)
+    make_box("LIGHT_Monolith_Slit_L", (0.03, 0.02, 6.2), (mx - 1.98, south - 0.03, 6.7), mats["led_warm"], lights)
+    make_box("LIGHT_Monolith_Slit_R", (0.03, 0.02, 6.2), (mx + 1.98, south - 0.03, 6.7), mats["led_warm"], lights)
     make_box("LIGHT_Monolith_Uplight", (1.5, 0.55, 0.05), (mx, south - 0.28, 0.38), mats["led_warm"], lights, unwrap=False)
     make_box("LIGHT_Monolith_Graze", (0.10, 0.62, 5.8), (mx - 1.95, south - 0.22, 7.0), mats["led_warm"], lights, unwrap=False)
-    make_box("LIGHT_Monolith_NameWash", (2.6, 0.04, 0.03), (mx, south - 0.08, 10.85), mats["led_warm"], lights, unwrap=False)
-    make_si_mark("PROP_Identity_Mark", (mx, south + 0.004, 11.85), mats["sign"], props)
+    make_box("LIGHT_Monolith_NameWash", (2.85, 0.03, 0.03), (mx, south - 0.05, 12.62), mats["led_warm"], lights, unwrap=False)
+    make_box(
+        "PROP_Identity_LetterBed",
+        (3.22, 0.010, 3.78),
+        (mx, south + 0.032, 9.48),
+        mats["metal_dark"],
+        props,
+        bevel=False,
+        unwrap=False,
+    )
+    make_si_mark("PROP_Identity_Mark", (mx, south + 0.020, 13.08), mats["sign_cyan"], props)
     make_face_lettering(
         "PROP_Identity_Name_01",
         "SADEKUL",
-        face_point=(mx, south, 10.55),
+        face_point=(mx, south, 12.22),
         normal=(0.0, -1.0, 0.0),
-        size=0.66,
-        extrude=0.006,
+        size=cap_size(0.68),
+        extrude=0.028,
         mat=mats["sign"],
         collection=props,
-        offset=-0.004,
+        offset=0.016,
         space=0.88,
-        bevel_depth=0.0014,
+        bevel_depth=0.0045,
+        weight="bold",
     )
     make_face_lettering(
         "PROP_Identity_Name_02",
         "ISLAM",
-        face_point=(mx, south, 9.72),
+        face_point=(mx, south, 11.38),
         normal=(0.0, -1.0, 0.0),
-        size=0.66,
-        extrude=0.006,
+        size=cap_size(0.68),
+        extrude=0.028,
         mat=mats["sign"],
         collection=props,
-        offset=-0.004,
+        offset=0.016,
         space=0.88,
-        bevel_depth=0.0014,
+        bevel_depth=0.0045,
+        weight="bold",
     )
-    make_box(
-        "PROP_Identity_Halo_01",
-        (2.55, 0.003, 0.08),
-        (mx, south + 0.012, 10.55),
-        mats["sign_back"],
-        props,
-        unwrap=False,
-    )
-    make_box(
-        "PROP_Identity_Halo_02",
-        (1.95, 0.003, 0.08),
-        (mx, south + 0.012, 9.72),
-        mats["sign_back"],
-        props,
-        unwrap=False,
-    )
-    make_box("PROP_Identity_Rule", (1.72, 0.008, 0.010), (mx, south + 0.006, 9.28), mats["bronze"], props)
+    make_box("PROP_Identity_Rule", (1.42, 0.008, 0.006), (mx, south + 0.014, 10.88), mats["sign_cyan"], props)
     make_face_lettering(
         "PROP_Identity_Title_01",
         "SOFTWARE ENGINEER",
-        face_point=(mx, south, 8.92),
+        face_point=(mx, south, 10.48),
         normal=(0.0, -1.0, 0.0),
-        size=0.18,
-        extrude=0.004,
-        mat=mats["sign"],
+        size=cap_size(0.14),
+        extrude=0.010,
+        mat=mats["sign_zone"],
         collection=props,
-        offset=-0.006,
-        space=0.96,
-        bevel_depth=0.0007,
+        offset=0.014,
+        space=1.02,
+        bevel_depth=0.0012,
+        weight="book",
     )
     make_face_lettering(
         "PROP_Identity_Title_02",
-        "AI SYSTEMS BUILDER",
-        face_point=(mx, south, 8.52),
+        "SYSTEMS ARCHITECT",
+        face_point=(mx, south, 10.18),
         normal=(0.0, -1.0, 0.0),
-        size=0.19,
-        extrude=0.004,
-        mat=mats["sign"],
+        size=cap_size(0.14),
+        extrude=0.010,
+        mat=mats["sign_zone"],
         collection=props,
-        offset=-0.006,
-        space=0.96,
-        bevel_depth=0.0007,
+        offset=0.014,
+        space=1.02,
+        bevel_depth=0.0012,
+        weight="book",
     )
-    make_box("PROP_Identity_Rule_02", (1.85, 0.008, 0.010), (mx, south + 0.006, 8.18), mats["bronze"], props)
     make_face_lettering(
         "PROP_Identity_Title_03",
         "DIGITAL RESIDENCE",
-        face_point=(mx, south, 7.82),
+        face_point=(mx, south, 9.78),
         normal=(0.0, -1.0, 0.0),
-        size=0.22,
+        size=cap_size(0.08),
         extrude=0.005,
-        mat=mats["sign"],
+        mat=mats["sign_zone"],
         collection=props,
-        offset=-0.006,
-        space=0.94,
-        bevel_depth=0.0008,
-    )
-    make_box(
-        "PROP_Identity_Halo_03",
-        (2.55, 0.003, 0.08),
-        (mx, south + 0.012, 7.82),
-        mats["sign_back"],
-        props,
-        unwrap=False,
+        offset=0.012,
+        space=1.12,
+        bevel_depth=0.0005,
+        weight="book",
     )
 
 
 def build_water(mats: dict[str, bpy.types.Material]) -> None:
     water = col("08_WATER")
     lights = col("10_LIGHTS")
-    make_box("ENV_Waterfall_Wall", (7.4, 0.55, 3.8), (-11.6, -8.35, 0.12), mats["stone"], water, bevel=True, bevel_width=0.04)
-    make_box("FX_Waterfall_Sheet", (6.8, 0.04, 3.4), (-11.6, -8.62, 0.28), mats["water"], water)
-    make_box("FX_Waterfall_Sheet_B", (6.4, 0.03, 3.15), (-11.6, -8.70, 0.22), mats["water"], water)
-    make_box("FX_Waterfall_Sheet_C", (5.8, 0.025, 2.85), (-11.6, -8.78, 0.18), mats["water"], water)
-    make_box("ENV_Water_Basin", (8.2, 3.6, 0.45), (-11.6, -10.6, -0.05), mats["stone"], water, bevel=True)
+    make_box("ENV_Waterfall_Basin_Upper", (5.2, 3.2, 0.50), (-18.4, -4.4, 5.60), mats["stone"], water, bevel=True, bevel_width=0.04)
+    make_box("ENV_Waterfall_Channel", (2.05, 4.4, 0.32), (-18.4, -7.0, 5.40), mats["stone"], water, bevel=True)
+    make_box("ENV_Waterfall_Lip", (4.6, 0.38, 0.22), (-18.4, -9.2, 5.45), mats["stone"], water, bevel=True)
+    make_box("ENV_Waterfall_Wall", (6.4, 0.72, 6.55), (-18.4, -9.15, 0.0), mats["stone"], water, bevel=True, bevel_width=0.05)
+    make_box("ENV_Waterfall_Retain", (8.0, 1.15, 2.4), (-18.4, -10.6, 0.0), mats["stone"], water, bevel=True)
+    make_box("FX_Waterfall_Sheet", (5.2, 0.04, 5.8), (-14.4, -9.38, 0.28), mats["water"], water)
+    make_box("FX_Waterfall_Sheet_B", (4.8, 0.03, 5.4), (-14.4, -9.48, 0.22), mats["water"], water)
+    make_box("FX_Waterfall_Sheet_C", (4.2, 0.025, 4.9), (-14.4, -9.56, 0.18), mats["water"], water)
+    make_box("ENV_Water_Basin", (8.6, 3.8, 0.50), (-14.4, -11.4, -0.08), mats["stone"], water, bevel=True)
     make_box("FX_Water_ReflectingPool", (18.5, 5.4, 0.05), (-6.2, -12.4, 0.28), mats["water"], water)
     make_box("ENV_Pool_Coping_S", (19.0, 0.28, 0.12), (-6.2, -15.1, 0.28), mats["bronze"], water)
     make_box("ENV_Pool_Coping_N", (19.0, 0.28, 0.12), (-6.2, -9.7, 0.28), mats["bronze"], water)
-    make_box("LIGHT_Waterfall_Base", (6.6, 0.08, 0.05), (-11.6, -8.7, 0.32), mats["led_warm"], lights)
-    make_box("LIGHT_Waterfall_Mid", (5.8, 0.04, 0.03), (-11.6, -8.66, 1.85), mats["led_warm"], lights)
+    make_box("LIGHT_Waterfall_Base", (5.4, 0.08, 0.05), (-14.4, -9.45, 0.32), mats["led_warm"], lights)
+    make_box("LIGHT_Waterfall_Mid", (4.8, 0.04, 0.03), (-14.4, -9.42, 3.2), mats["led_warm"], lights)
     make_box("LIGHT_Pool_Edge", (17.8, 0.05, 0.03), (-6.2, -15.05, 0.34), mats["led_warm"], lights)
     foam_cards = [
-        make_alpha_card("FX_Waterfall_Foam_A", (-11.6, -9.15, 0.55), (3.4, 1.15), 0.0, mats["foam"], water, pitch=12.0),
-        make_alpha_card("FX_Waterfall_Foam_B", (-11.4, -10.4, 0.42), (2.8, 0.85), 0.35, mats["foam"], water, pitch=8.0),
+        make_alpha_card("FX_Waterfall_Foam_A", (-14.4, -10.05, 0.55), (3.4, 1.15), 0.0, mats["foam"], water, pitch=12.0),
+        make_alpha_card("FX_Waterfall_Foam_B", (-14.2, -11.15, 0.42), (2.8, 0.85), 0.35, mats["foam"], water, pitch=8.0),
         make_alpha_card("FX_Shore_Foam_S", (0.0, -29.6, -0.85), (18.0, 3.2), 0.0, mats["foam"], water, pitch=6.0),
     ]
     join_objects("FX_Water_FoamCards", foam_cards, water)
@@ -2218,14 +2407,14 @@ def build_collision() -> None:
     mat = bpy.data.materials["MAT_CollisionProxy"]
     proxies = [
         ("COL_Ground", (54.0, 46.0, 1.2), (0.0, -4.0, -1.2)),
-        ("COL_Entrance_Steps", (17.0, 5.0, 1.7), (0.0, -9.6, 0.0)),
-        ("COL_Entrance_Platform", (22.4, 11.2, 1.55), (0.0, -0.4, 0.0)),
-        ("COL_Door", (10.2, 0.5, 5.0), (0.0, -0.72, 1.58)),
+        ("COL_Entrance_Steps", (7.2, 5.6, 2.05), (0.0, -10.5, 0.0)),
+        ("COL_Entrance_Platform", (18.4, 8.6, 1.98), (0.0, -2.35, 0.0)),
+        ("COL_Door", (8.4, 0.6, 5.4), (0.0, -2.55, 1.82)),
         ("COL_Boundary", (54.0, 0.9, 2.5), (0.0, -26.2, 0.08)),
         ("COL_Gate", (9.0, 1.5, 4.2), (0.0, -26.2, 0.08)),
-        ("COL_Building_Base", (38.4, 13.6, 5.6), (0.5, 9.6, 1.55)),
-        ("COL_Building_West", (14.6, 15.6, 8.9), (-18.4, 8.5, 1.55)),
-        ("COL_Building_East", (10.4, 11.6, 16.4), (19.4, 7.9, 1.55)),
+        ("COL_Building_Base", (14.6, 12.8, 7.60), (0.0, 2.10, 1.80)),
+        ("COL_Building_West", (15.4, 16.4, 9.40), (-16.55, 2.4, 1.80)),
+        ("COL_Building_East", (13.4, 14.2, 7.60), (13.55, 2.55, 1.80)),
         ("COL_Water_Edge", (19.0, 6.0, 0.7), (-6.2, -12.4, -0.05)),
         ("COL_Identity_Monolith", (4.4, 1.4, 17.4), (-28.4, 1.70, 0.08)),
     ]
@@ -2237,16 +2426,16 @@ def build_collision() -> None:
 
 def build_anchors() -> None:
     ui = col("12_UI_ANCHORS")
-    make_empty("UI_Entrance_Trigger", (0.0, -8.4, 1.8), ui)
+    make_empty("UI_Entrance_Trigger", (0.0, -11.2, 1.9), ui)
     make_empty("UI_Identity", (-28.4, 1.11, 9.8), ui)
     make_empty("UI_Identity_Monolith", (-28.4, 1.11, 9.8), ui)
     make_empty("UI_Owner_Name", (-28.4, 1.11, 9.9), ui)
     make_empty("UI_Residence_Sign", (0.0, -26.34, 3.22), ui)
-    make_empty("UI_Engineering_Direction", (-17.0, -1.8, 2.2), ui)
-    make_empty("UI_AI_Lab_Direction", (18.4, -3.6, 2.2), ui)
-    make_empty("UI_Project_Direction", (10.5, -6.5, 2.0), ui)
-    make_empty("UI_Command_Center_Direction", (0.2, 12.6, 2.4), ui)
-    make_empty("UI_Building_Entry", (0.0, -2.2, 2.4), ui)
+    make_empty("UI_Engineering_Direction", (-16.55, -8.2, 2.4), ui)
+    make_empty("UI_AI_Lab_Direction", (15.85, -0.8, 2.4), ui)
+    make_empty("UI_Project_Direction", (13.55, -4.4, 2.2), ui)
+    make_empty("UI_Command_Center_Direction", (3.55, 4.2, 10.2), ui)
+    make_empty("UI_Building_Entry", (0.0, -3.6, 2.6), ui)
     make_empty("ENV_Exterior_Root", (0.0, 0.0, 0.0), col("90_EXPORT"))
 
 
@@ -2264,8 +2453,16 @@ def build_qa_cameras_and_lights() -> None:
     cameras = col("13_CAMERAS")
     debug = col("99_DEBUG")
     specs = [
-        ("CAM_Hero_ThreeQuarter", (22.4, -24.8, 7.5), (-7.8, -2.2, 5.0), 32),
-        ("CAM_SYSTEM_HERO", (22.4, -24.8, 7.5), (-7.8, -2.2, 5.0), 32),
+        ("CAM_Hero_ThreeQuarter", (17.2, -20.6, 8.35), (-3.8, 0.8, 5.4), 35),
+        ("CAM_SYSTEM_HERO", (17.2, -20.6, 8.35), (-3.8, 0.8, 5.4), 35),
+        ("CAM_Clay_Hero", (17.2, -20.6, 8.35), (-3.8, 0.8, 5.4), 35),
+        ("CAM_Front", (0.2, -21.4, 5.8), (0.0, -1.2, 5.8), 35),
+        ("CAM_Clay_Front", (0.2, -21.4, 5.8), (0.0, -1.2, 5.8), 35),
+        ("CAM_LeftPerspective", (-18.8, -15.4, 6.4), (0.2, 0.8, 5.8), 35),
+        ("CAM_RightPerspective", (20.6, -15.2, 6.6), (0.4, 1.0, 6.0), 35),
+        ("CAM_IslandContext", (8.0, -38.0, 10.4), (0.0, -1.0, 4.8), 28),
+        ("CAM_MaterialCloseup", (6.4, -10.2, 3.15), (-12.2, -5.4, 6.2), 50),
+        ("CAM_GlassCloseup", (2.4, -8.6, 3.4), (0.0, -2.6, 5.2), 48),
         ("CAM_ISLAND_FRONT", (0.4, -36.0, 6.2), (0.0, -4.0, 4.4), 30),
         ("CAM_ISLAND_3Q", (22.4, -24.8, 7.5), (-7.8, -2.2, 5.0), 32),
         ("CAM_SHORELINE_CLOSEUP", (8.4, -20.6, 0.35), (4.0, -16.2, -1.1), 40),
@@ -2285,14 +2482,15 @@ def build_qa_cameras_and_lights() -> None:
         ("CAM_SIGNAGE_CLOSEUP", (-28.4, -6.6, 9.55), (-28.4, 1.11, 9.55), 38),
         ("CAM_MATERIAL_CLOSEUP", (5.2, -9.4, 2.4), (0.6, -3.2, 4.2), 50),
         ("CAM_Front_Architectural", (-8.0, -48.0, 4.4), (-6.0, -6.0, 6.8), 32),
-        ("CAM_Entrance", (0.25, -14.5, 2.05), (0.0, -3.2, 4.6), 40),
+        ("CAM_Entrance", (0.2, -16.8, 3.55), (0.0, -4.2, 4.6), 38),
+        ("CAM_Clay_Entrance", (0.2, -16.8, 3.55), (0.0, -4.2, 4.6), 38),
         ("CAM_Identity_Monolith_Closeup", (-28.4, -6.6, 9.55), (-28.4, 1.11, 9.55), 38),
         ("CAM_Vegetation_Closeup", (-12.05, -21.35, 1.72), (-12.2, -19.8, 2.55), 35),
         ("CAM_Gate", (0.2, -36.5, 1.85), (0.0, -26.0, 2.85), 36),
         ("CAM_Water_Feature", (-11.6, -13.4, 2.35), (-11.6, -8.55, 1.9), 38),
         ("CAM_Material_Detail", (5.2, -9.4, 2.4), (0.6, -3.2, 4.2), 50),
         ("CAM_Night_Wide", (8.0, -58.0, 8.4), (0.5, -8.0, 7.2), 28),
-        ("CAM_Elevated", (18.0, -28.0, 22.0), (1.2, 0.0, 6.5), 30),
+        ("CAM_Elevated", (14.5, -18.5, 16.8), (0.8, 1.2, 6.8), 32),
     ]
     for name, loc, target, lens in specs:
         cam_data = bpy.data.cameras.new(name)
@@ -2315,18 +2513,18 @@ def build_qa_cameras_and_lights() -> None:
         QA_ONLY.append(light)
         return light
 
-    moon = add_light("LIGHT_QA_Moon", "SUN", (-16.0, -14.0, 30.0), 2.35, (0.62, 0.74, 0.95))
+    moon = add_light("LIGHT_QA_Moon", "SUN", (-16.0, -14.0, 30.0), 1.65, (0.78, 0.80, 0.82))
     moon.rotation_euler = (math.radians(48), math.radians(-12), math.radians(18))
-    add_light("LIGHT_QA_Fill", "AREA", (2.0, -32.0, 10.0), 4200.0, (0.68, 0.76, 0.94), 28.0)
-    add_light("LIGHT_QA_Entrance", "AREA", (0.0, -7.4, 5.4), 3600.0, (1.0, 0.74, 0.42), 10.0)
-    add_light("LIGHT_QA_Interior", "AREA", (0.0, 1.8, 4.2), 2400.0, (1.0, 0.72, 0.40), 8.0)
-    add_light("LIGHT_QA_East", "AREA", (22.0, -5.0, 8.5), 1400.0, (1.0, 0.76, 0.48), 9.0)
-    add_light("LIGHT_QA_L2", "AREA", (5.0, -4.0, 9.2), 1500.0, (1.0, 0.70, 0.38), 10.0)
-    add_light("LIGHT_QA_Rim", "AREA", (-20.0, 12.0, 14.0), 900.0, (0.58, 0.66, 0.84), 12.0)
-    add_light("LIGHT_QA_Monolith", "AREA", (-28.4, -4.6, 9.6), 1600.0, (1.0, 0.80, 0.50), 6.0)
-    add_light("LIGHT_QA_Tree", "AREA", (-12.2, -18.6, 1.4), 900.0, (1.0, 0.82, 0.54), 4.0)
-    add_light("LIGHT_QA_Water", "AREA", (-11.6, -12.4, 1.1), 720.0, (1.0, 0.78, 0.48), 5.0)
-    add_light("LIGHT_QA_Facade", "AREA", (0.0, -22.0, 8.0), 1800.0, (0.72, 0.80, 0.95), 22.0)
+    add_light("LIGHT_QA_Fill", "AREA", (2.0, -32.0, 10.0), 1100.0, (0.78, 0.80, 0.84), 28.0)
+    add_light("LIGHT_QA_Entrance", "AREA", (0.0, -7.4, 5.4), 900.0, (1.0, 0.82, 0.62), 10.0)
+    add_light("LIGHT_QA_Interior", "AREA", (0.0, 1.8, 4.2), 720.0, (1.0, 0.78, 0.52), 8.0)
+    add_light("LIGHT_QA_East", "AREA", (22.0, -5.0, 8.5), 420.0, (0.92, 0.88, 0.82), 9.0)
+    add_light("LIGHT_QA_L2", "AREA", (5.0, -4.0, 9.2), 480.0, (1.0, 0.80, 0.58), 10.0)
+    add_light("LIGHT_QA_Rim", "AREA", (-20.0, 12.0, 14.0), 380.0, (0.72, 0.76, 0.82), 12.0)
+    add_light("LIGHT_QA_Monolith", "AREA", (-28.4, -4.6, 9.6), 520.0, (0.95, 0.88, 0.75), 6.0)
+    add_light("LIGHT_QA_Tree", "AREA", (-12.2, -18.6, 1.4), 280.0, (0.90, 0.88, 0.82), 4.0)
+    add_light("LIGHT_QA_Water", "AREA", (-11.6, -12.4, 1.1), 240.0, (0.88, 0.86, 0.80), 5.0)
+    add_light("LIGHT_QA_Facade", "AREA", (0.0, -22.0, 8.0), 560.0, (0.80, 0.82, 0.86), 22.0)
 
 
 def configure_eevee(scene: bpy.types.Scene) -> None:
@@ -2396,27 +2594,98 @@ def export_glb() -> None:
         bpy.ops.export_scene.gltf(**kwargs)
 
 
-def render_qa() -> list[str]:
+def hide_context_for_arch_qa(hide: bool) -> None:
+    prefixes = (
+        "PROP_Tree",
+        "PROP_Palm",
+        "PROP_Shrub",
+        "PROP_Hedge",
+        "PROP_Ornamental",
+        "Island_",
+        "FX_",
+        "Site_Ground",
+    )
+    for obj in bpy.data.objects:
+        if obj.name.startswith(prefixes):
+            obj.hide_render = hide
+
+
+def apply_clay(clay: bpy.types.Material) -> dict[str, list[bpy.types.Material]]:
+    backup: dict[str, list[bpy.types.Material]] = {}
+    skip = ("COL_", "CAM_", "LIGHT_QA")
+    skip_mesh = (
+        "PROP_Tree",
+        "PROP_Palm",
+        "PROP_Shrub",
+        "PROP_Hedge",
+        "PROP_Ornamental",
+        "Island_",
+        "FX_",
+        "Site_",
+    )
+    for obj in bpy.data.objects:
+        if obj.type != "MESH" or not obj.data.materials:
+            continue
+        if obj.name.startswith(skip) or obj.name.startswith(skip_mesh):
+            continue
+        backup[obj.name] = list(obj.data.materials)
+        obj.data.materials.clear()
+        obj.data.materials.append(clay)
+    return backup
+
+
+def restore_materials(backup: dict[str, list[bpy.types.Material]]) -> None:
+    for name, materials_list in backup.items():
+        obj = bpy.data.objects.get(name)
+        if obj is None or obj.type != "MESH":
+            continue
+        obj.data.materials.clear()
+        for mat in materials_list:
+            if mat is not None:
+                obj.data.materials.append(mat)
+
+
+def render_camera_set(names: set[str]) -> list[str]:
     scene = bpy.context.scene
-    configure_eevee(scene)
-    scene.render.image_settings.file_format = "PNG"
     rendered: list[str] = []
-    wanted = {
-        "CAM_SYSTEM_HERO",
-        "CAM_Identity_Monolith_Closeup",
-        "CAM_SIGNAGE_CLOSEUP",
-        "CAM_PORTFOLIO_FACADE_SYSTEM",
-        "CAM_Gate",
-    }
-    cameras = [obj for obj in bpy.data.objects if obj.type == "CAMERA"]
-    if os.environ.get("FULL_QA") != "1":
-        cameras = [cam for cam in cameras if cam.name in wanted]
+    cameras = [obj for obj in bpy.data.objects if obj.type == "CAMERA" and obj.name in names]
     for cam in cameras:
         scene.camera = cam
         out = RENDER_DIR / f"{cam.name}.png"
         scene.render.filepath = str(out)
         bpy.ops.render.render(write_still=True)
         rendered.append(str(out))
+    return rendered
+
+
+def render_qa(mats: dict[str, bpy.types.Material]) -> list[str]:
+    if os.environ.get("SKIP_QA_RENDER") == "1":
+        return []
+    scene = bpy.context.scene
+    configure_eevee(scene)
+    scene.render.image_settings.file_format = "PNG"
+    hide_context_for_arch_qa(True)
+    backup = apply_clay(mats["clay"])
+    rendered = render_camera_set({"CAM_Clay_Hero", "CAM_Clay_Front", "CAM_Clay_Entrance"})
+    restore_materials(backup)
+    beauty = {
+        "CAM_Hero_ThreeQuarter",
+        "CAM_Front",
+        "CAM_Entrance",
+        "CAM_MaterialCloseup",
+        "CAM_GlassCloseup",
+    }
+    if os.environ.get("FULL_QA") == "1":
+        beauty.update(
+            {
+                "CAM_LeftPerspective",
+                "CAM_RightPerspective",
+                "CAM_Elevated",
+                "CAM_IslandContext",
+            }
+        )
+    rendered.extend(render_camera_set(beauty))
+    hide_context_for_arch_qa(False)
     return rendered
 
 
@@ -2453,7 +2722,7 @@ def main() -> None:
     rename_actions()
     bpy.ops.object.select_all(action="DESELECT")
     bpy.ops.wm.save_as_mainfile(filepath=str(BLEND_PATH))
-    rendered = render_qa()
+    rendered = render_qa(mats)
     export_glb()
     stats = collect_stats()
     if GLB_PATH.exists():

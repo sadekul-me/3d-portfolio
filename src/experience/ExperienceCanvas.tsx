@@ -1,6 +1,6 @@
 import { Suspense, useLayoutEffect, useMemo } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { ContactShadows, OrbitControls } from '@react-three/drei';
+import { ContactShadows } from '@react-three/drei';
 import {
   ACESFilmicToneMapping,
   BackSide,
@@ -24,9 +24,11 @@ import { IslandTerrain } from '@/experience/environment/IslandTerrain';
 import { ShoreFoam } from '@/experience/environment/ShoreFoam';
 import { RealTrees } from '@/experience/environment/RealTrees';
 import { WaterFeature } from '@/experience/environment/WaterFeature';
-import { PortfolioDisplays } from '@/experience/environment/PortfolioDisplays';
+import { WaterDebugOverlay } from '@/experience/environment/WaterDebugOverlay';
 import { useVisualLook } from '@/experience/look/VisualLookContext';
 import { VISUAL_LOOK_PROFILES, type VisualLookProfile } from '@/experience/look/visualLook';
+import { CAM_HERO_EXTERIOR_16X9 } from '@/experience/camera/exteriorCameras';
+import { ExteriorHeroCamera } from '@/experience/camera/ExteriorHeroCamera';
 
 function ApplyExposure({ exposure }: { exposure: number }) {
   const gl = useThree((state) => state.gl);
@@ -132,7 +134,12 @@ export function ExperienceCanvas() {
         toneMapping: ACESFilmicToneMapping,
         toneMappingExposure: profile.exposure,
       }}
-      camera={{ position: [30.0, 13.2, 48.0], fov: 30, near: 0.1, far: 380 }}
+      camera={{
+        position: CAM_HERO_EXTERIOR_16X9.position,
+        fov: CAM_HERO_EXTERIOR_16X9.vfovDeg,
+        near: 0.15,
+        far: 420,
+      }}
     >
       <color attach="background" args={[profile.background]} />
       <fog attach="fog" args={[profile.fog, profile.fogNear, profile.fogFar]} />
@@ -189,19 +196,12 @@ export function ExperienceCanvas() {
         <ShoreFoam />
         <RealTrees />
         <WaterFeature look={look} />
-        <PortfolioDisplays look={look} />
+        <WaterDebugOverlay />
       </Suspense>
       {quality.shadows ? (
         <ContactShadows position={[0, 0.02, 0]} opacity={0.18} scale={48} blur={2.4} far={14} />
       ) : null}
-      <OrbitControls
-        enablePan={false}
-        target={[-2.0, 3.2, 4.0]}
-        minDistance={28}
-        maxDistance={70}
-        maxPolarAngle={Math.PI / 2.08}
-        enableDamping
-      />
+      <ExteriorHeroCamera />
     </Canvas>
   );
 }

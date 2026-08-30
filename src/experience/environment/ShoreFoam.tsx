@@ -9,13 +9,18 @@ import {
   RepeatWrapping,
 } from 'three';
 
-import { sampleShoreline, WATER_Y } from '@/experience/environment/islandHeight';
+import { expandedShoreline, isOceanForbidden } from '@/experience/environment/waterContainment';
+import { WATER_Y } from '@/experience/environment/islandHeight';
 
 const FOAM_URL = '/assets/world/water/water-foam-shore.png';
 
-function buildShoreRibbon(width = 2.8) {
-  const samples = sampleShoreline(120);
+function buildShoreRibbon(width = 2.2) {
+  const samples = expandedShoreline(120).filter((sample) => !isOceanForbidden(sample.x, sample.z));
   const geo = new BufferGeometry();
+  if (samples.length < 8) {
+    geo.setAttribute('position', new BufferAttribute(new Float32Array(9), 3));
+    return geo;
+  }
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
@@ -25,19 +30,15 @@ function buildShoreRibbon(width = 2.8) {
     if (!a || !b) {
       continue;
     }
-    const dx = b.x - a.x;
-    const dz = b.z - a.z;
-    const len = Math.hypot(dx, dz) || 1;
-    const nx = -dz / len;
-    const nz = dx / len;
+    const span = Math.hypot(a.x + 3.2, a.z - 6.8) || 1;
+    const ox = (a.x + 3.2) / span;
+    const oz = (a.z - 6.8) / span;
     const inner = i * 2;
-    positions.push(a.x - nx * 0.2, WATER_Y + 0.03, a.z - nz * 0.2);
-    positions.push(a.x + nx * width, WATER_Y + 0.025, a.z + nz * width);
+    positions.push(a.x, WATER_Y + 0.03, a.z);
+    positions.push(a.x + ox * width, WATER_Y + 0.025, a.z + oz * width);
     uvs.push(i / 18, 0, i / 18, 1);
-    if (i < samples.length) {
-      const next = ((i + 1) % samples.length) * 2;
-      indices.push(inner, inner + 1, next + 1, inner, next + 1, next);
-    }
+    const next = ((i + 1) % samples.length) * 2;
+    indices.push(inner, inner + 1, next + 1, inner, next + 1, next);
   }
   geo.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3));
   geo.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
@@ -61,7 +62,7 @@ export function ShoreFoam() {
   });
 
   return (
-    <mesh geometry={geometry} frustumCulled={false}>
+    <mesh geometry={geometry} frustumCulled={false} name="WATER_SHORE_FOAM">
       <meshBasicMaterial
         map={texture}
         transparent

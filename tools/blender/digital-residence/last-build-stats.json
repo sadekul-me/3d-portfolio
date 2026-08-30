@@ -1,9 +1,9 @@
 {
   "blender": "5.2.0 LTS",
-  "exportableObjects": 306,
-  "meshObjects": 295,
-  "triangleCount": 445318,
-  "materialCount": 30,
+  "exportableObjects": 373,
+  "meshObjects": 362,
+  "triangleCount": 817486,
+  "materialCount": 32,
   "lightCount": 11,
   "animationObjects": [
     "PROP_Door_Main_L",
@@ -32,12 +32,6 @@
     "90_EXPORT",
     "99_DEBUG"
   ],
-  "glbBytes": 25108692,
-  "renders": [
-    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_Gate.png",
-    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_Identity_Monolith_Closeup.png",
-    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_PORTFOLIO_FACADE_SYSTEM.png",
-    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_SIGNAGE_CLOSEUP.png",
-    "D:\\3d-portfolio\\assets-source\\blender\\digital-residence\\renders\\CAM_SYSTEM_HERO.png"
-  ]
+  "glbBytes": 34923508,
+  "renders": []
 }

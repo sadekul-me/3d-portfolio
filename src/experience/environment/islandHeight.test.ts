@@ -20,9 +20,7 @@ describe('island heightfield', () => {
     expect(shore.every((p) => Math.abs(p.y - WATER_Y) < 1.2)).toBe(true);
   });
 
-  it('grounds hero trees on land', () => {
-    for (const tree of HERO_TREE_SITES) {
-      expect(heightAt(tree.position[0], tree.position[2])).toBeGreaterThan(WATER_Y);
-    }
+  it('keeps hero tree slots empty until a licensed landscaping asset is approved', () => {
+    expect(HERO_TREE_SITES).toEqual([]);
   });
 });

@@ -111,14 +111,4 @@ export const HERO_TREE_SITES: Array<{
   scale: number;
   yaw: number;
   lod: 0 | 1 | 2;
-}> = [
-  { position: [-7.8, 0, 11.4], scale: 1.0, yaw: 0.42, lod: 0 },
-  { position: [8.4, 0, 10.6], scale: 0.94, yaw: 1.85, lod: 0 },
-  { position: [-14.2, 0, 7.2], scale: 0.82, yaw: 2.55, lod: 0 },
-  { position: [13.6, 0, 6.8], scale: 0.8, yaw: 4.2, lod: 0 },
-  { position: [-20.4, 0, 12.8], scale: 1.06, yaw: 0.95, lod: 1 },
-  { position: [18.8, 0, 13.2], scale: 1.0, yaw: 5.1, lod: 1 },
-  { position: [4.6, 0, 16.4], scale: 0.72, yaw: 1.4, lod: 1 },
-  { position: [-22.8, 0, 18.6], scale: 1.12, yaw: 2.1, lod: 2 },
-  { position: [21.6, 0, 19.2], scale: 1.08, yaw: 4.7, lod: 2 },
-];
+}> = [];
